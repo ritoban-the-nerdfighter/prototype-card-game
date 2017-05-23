@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class HandManager : MonoBehaviour
 {
-    // FIXME: Make these fluid based on number of cards
-    public float MinimumCardHolderRotation = -60;
-    public float MaximumCardHolderRotation = 60;
+    //public float MinimumCardHolderPosition = -10;
+    //public float MaximumCardHolderPosition = 10;
+    public float CardWidth = 1;
+    public float Padding = 0.1f;
+    // TODO: Add different axes (x, y)
     public LayerMask CardMask;
 
     // FIXME: This will eventually become a BidirectionalDictionary<Card, GameObject>
@@ -21,8 +23,8 @@ public class HandManager : MonoBehaviour
     private void Awake()
     {
         Cards = new List<GameObject>();
-        OnCardAdded += UpdateCardRotations;
-        OnCardRemoved += UpdateCardRotations;
+        OnCardAdded += UpdateCardPositions;
+        OnCardRemoved += UpdateCardPositions;
     }
 
 
@@ -36,7 +38,7 @@ public class HandManager : MonoBehaviour
         }
         // FIXME: The cards that we have at the start of the game are not updated by the update method
         // and it would be extra computation time to make it iterate through all of the cards several times on the first frame. 
-        UpdateCardRotations();
+        UpdateCardPositions();
     }
 
     private GameObject highlightedCard = null;
@@ -91,14 +93,16 @@ public class HandManager : MonoBehaviour
                 {
                     highlightedCard.transform.localScale = previousScale;
                 }
-                highlightedCard = hit.collider.gameObject;
+                highlightedCard = hit.collider.transform.parent.gameObject;
                 previousScale = highlightedCard.transform.localScale;
                 highlightedCard.transform.localScale = previousScale * 2;
+                highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "HighlightedCard";
             }
         }
         else if(highlightedCard != null)
         {
             highlightedCard.transform.localScale = previousScale;
+            //highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "Cards";
             highlightedCard = null;
         }
 
@@ -107,25 +111,15 @@ public class HandManager : MonoBehaviour
     }
 
     // TODO: Setup animations
-    private void UpdateCardRotations()
+    private void UpdateCardPositions()
     {
-        if (lastChildCount == 1)
+        float range = (CardWidth + Padding) * lastChildCount;
+        float min = -range / 2;
+        float max = range / 2;
+        float delta = range / lastChildCount;
+        for (int i = 0; i < lastChildCount; i++)
         {
-            // If there is only 1 card, rotate it to the average of min and max
-            Cards[0].transform.rotation = Quaternion.Euler(0, 0, (MinimumCardHolderRotation + MaximumCardHolderRotation) / 2);
-        }
-        else
-        {
-            // Otherwise, 
-            float angleDiff = MaximumCardHolderRotation - MinimumCardHolderRotation;
-            float delta = angleDiff / (lastChildCount - 1);
-            float currentRotation = MinimumCardHolderRotation;
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                transform.GetChild(i).localEulerAngles = new Vector3(0, 0, currentRotation);
-
-                currentRotation += delta;
-            }
+            Cards[i].transform.position = new Vector3(min + delta * i, Cards[i].transform.position.y);
         }
     }
 }
