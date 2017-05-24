@@ -14,7 +14,7 @@ TagManager:
   - 
   - 
   - CardsInHand
-  - 
+  - AllCards
   - 
   - 
   - 
@@ -41,9 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Cards
+  - name: CardsInHand
     uniqueID: 3753624443
     locked: 0
   - name: HighlightedCard
     uniqueID: 1645231193
+    locked: 0
+  - name: SelectedCard
+    uniqueID: 1124071853
+    locked: 0
+  - name: PlacedCards
+    uniqueID: 1465139223
     locked: 0

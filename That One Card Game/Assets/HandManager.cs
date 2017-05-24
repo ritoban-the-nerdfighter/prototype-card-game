@@ -9,7 +9,7 @@ public class HandManager : MonoBehaviour
     //public float MaximumCardHolderPosition = 10;
     public float CardWidth = 1;
     public float Padding = 0.1f;
-    // TODO: Add different axes (x, y)
+    // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
     // FIXME: This will eventually become a BidirectionalDictionary<Card, GameObject>
@@ -44,6 +44,9 @@ public class HandManager : MonoBehaviour
     private GameObject highlightedCard = null;
     private Vector3 previousScale = Vector3.one;
 
+    private GameObject selectedCard = null;
+    private Vector3 mouseOffset = Vector3.zero;
+
     private void Update()
     {
         // If the number of children we had changed
@@ -62,6 +65,7 @@ public class HandManager : MonoBehaviour
                         // FIXME: This is a really hack-ish way to handle cards that weren't added as the last child
                         Cards.Insert(i, child);
                         lastChildCount++;
+                        
                         OnCardAdded();
                     }
 
@@ -70,14 +74,14 @@ public class HandManager : MonoBehaviour
             // And, we actually lost a card
             if (transform.childCount < lastChildCount)
             {
-                // FIXME: FOR NOW! We will completely rework this soon
-                lastChildCount--;
+
                 // FIMXE: Just completely recalculate the Cards list. WE NEED TO CALCULATE THE CARD THAT DISAPEARED
                 Cards = new List<GameObject>();
                 for (int i = 0; i < transform.childCount; i++)
                 {
                     Cards.Add(transform.GetChild(i).gameObject);
                 }
+                lastChildCount = Cards.Count;
                 OnCardRemoved();
             }
         }
@@ -85,7 +89,8 @@ public class HandManager : MonoBehaviour
         // Calculate Card Under Mouse
         // FIXME: ADD ANIMATIONS!!
         RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), 12, CardMask);
-        if (hit.collider != null)
+        // FIXME: Hard Coding in layer. Layer HighlightedCards may not always be layer 8
+        if (hit.collider != null && hit.collider.gameObject.layer == 8)
         {
             if (hit.collider.gameObject != highlightedCard)
             {
@@ -95,31 +100,67 @@ public class HandManager : MonoBehaviour
                 }
                 highlightedCard = hit.collider.transform.parent.gameObject;
                 previousScale = highlightedCard.transform.localScale;
+                // FIXME: Hard Coding in scale
                 highlightedCard.transform.localScale = previousScale * 2;
+                // FIXME: Hard Coding
+
                 highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "HighlightedCard";
             }
         }
         else if(highlightedCard != null)
         {
             highlightedCard.transform.localScale = previousScale;
-            //highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "Cards";
-            highlightedCard = null;
+            // FIXME: Hard Coding
+            highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "CardsInHand";
+            highlightedCard = null; 
+
+
         }
 
-        
+        if(highlightedCard != null && Input.GetMouseButtonDown(0))
+        {
+            selectedCard = highlightedCard;
+            highlightedCard = null;
+            selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCard";
+            mouseOffset = selectedCard.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //mouseOffset.z = 0;
+            // FIXME: Hard Coding
 
+            selectedCard.SetLayerRecursively(9);
+            selectedCard.transform.localScale = previousScale;
+            previousScale = Vector3.zero;
+        }
+        // FIXME: Make it so that it automatically figures out where to place the card on a board
+        else if(selectedCard != null && Input.GetMouseButtonDown(0))
+        {
+            // Place the selected card
+            selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "PlacedCards";
+            selectedCard = null;
+        }
+
+
+    }
+
+    private void LateUpdate()
+    {
+        if (selectedCard != null)
+        {
+            selectedCard.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + mouseOffset;
+
+        }
     }
 
     // TODO: Setup animations
     private void UpdateCardPositions()
     {
-        float range = (CardWidth + Padding) * lastChildCount;
+        float range = (CardWidth + Padding) * (lastChildCount-1);
         float min = -range / 2;
         float max = range / 2;
-        float delta = range / lastChildCount;
+        float delta = (max-min) / (lastChildCount-1);
         for (int i = 0; i < lastChildCount; i++)
         {
             Cards[i].transform.position = new Vector3(min + delta * i, Cards[i].transform.position.y);
         }
     }
 }
+ 
