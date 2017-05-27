@@ -15,6 +15,9 @@ public class HandManager : MonoBehaviour
     // FIXME: This will eventually become a BidirectionalDictionary<Card, GameObject>
     public List<GameObject> Cards { get; protected set; }
 
+
+    public GameObject BoardParent;
+
     // FIXME: Eventually, this is going to take in a card
     private event Action OnCardAdded;
     private event Action OnCardRemoved;
@@ -90,7 +93,7 @@ public class HandManager : MonoBehaviour
         // FIXME: ADD ANIMATIONS!!
         RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), 12, CardMask);
         // FIXME: Hard Coding in layer. Layer HighlightedCards may not always be layer 8
-        if (hit.collider != null && hit.collider.gameObject.layer == 8)
+        if (hit.collider != null && hit.collider.gameObject.layer == 8 && selectedCard == null)
         {
             if (hit.collider.gameObject != highlightedCard)
             {
@@ -106,18 +109,18 @@ public class HandManager : MonoBehaviour
 
                 highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "HighlightedCard";
             }
+            
         }
-        else if(highlightedCard != null)
+        else if (highlightedCard != null)
         {
             highlightedCard.transform.localScale = previousScale;
             // FIXME: Hard Coding
             highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "CardsInHand";
-            highlightedCard = null; 
-
+            highlightedCard = null;
 
         }
 
-        if(highlightedCard != null && Input.GetMouseButtonDown(0))
+        if (highlightedCard != null && Input.GetMouseButtonDown(0))
         {
             selectedCard = highlightedCard;
             highlightedCard = null;
@@ -133,9 +136,23 @@ public class HandManager : MonoBehaviour
         // FIXME: Make it so that it automatically figures out where to place the card on a board
         else if(selectedCard != null && Input.GetMouseButtonDown(0))
         {
-            // Place the selected card
-            selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "PlacedCards";
-            selectedCard = null;
+            if (Vector3.SqrMagnitude(transform.position - selectedCard.transform.position) > Vector3.SqrMagnitude(BoardParent.transform.position - selectedCard.transform.position))
+            {
+                // Place the selected card
+                selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "PlacedCards";
+                selectedCard.transform.SetParent(BoardParent.transform);
+                selectedCard.transform.SetAsLastSibling();
+                selectedCard = null;
+            }
+            else
+            {
+                selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "CardsInHand";
+                //highlightedCard = selectedCard;
+                selectedCard.SetLayerRecursively(8);
+                selectedCard = null;
+
+                OnCardAdded();
+            }
         }
 
 
@@ -153,13 +170,19 @@ public class HandManager : MonoBehaviour
     // TODO: Setup animations
     private void UpdateCardPositions()
     {
+        if (lastChildCount == 1)
+        {
+            transform.GetChild(0).position = this.transform.position;
+            return;
+        }
+        
         float range = (CardWidth + Padding) * (lastChildCount-1);
         float min = -range / 2;
         float max = range / 2;
         float delta = (max-min) / (lastChildCount-1);
         for (int i = 0; i < lastChildCount; i++)
         {
-            Cards[i].transform.position = new Vector3(min + delta * i, Cards[i].transform.position.y);
+            Cards[i].transform.position = new Vector3(min + delta * i, this.transform.position.y);
         }
     }
 }
