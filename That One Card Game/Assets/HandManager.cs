@@ -9,12 +9,13 @@ public class HandManager : MonoBehaviour
     //public float MaximumCardHolderPosition = 10;
     public float CardWidth = 1;
     public float Padding = 0.1f;
+    public float HighlightScaleIncrase = 1.5f;
     // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
     // FIXME: This will eventually become a BidirectionalDictionary<Card, GameObject>
     public List<GameObject> Cards { get; protected set; }
-
+    
 
     public GameObject BoardParent;
 
@@ -100,14 +101,15 @@ public class HandManager : MonoBehaviour
                 if (highlightedCard != null)
                 {
                     highlightedCard.transform.localScale = previousScale;
+                    highlightedCard.SetSortingLayerRecursively("CardsInHand");
                 }
                 highlightedCard = hit.collider.transform.parent.gameObject;
                 previousScale = highlightedCard.transform.localScale;
                 // FIXME: Hard Coding in scale
-                highlightedCard.transform.localScale = previousScale * 2;
+                highlightedCard.transform.localScale = previousScale * HighlightScaleIncrase;
                 // FIXME: Hard Coding
 
-                highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "HighlightedCard";
+                highlightedCard.SetSortingLayerRecursively("HighlightedCard");
             }
             
         }
@@ -115,7 +117,7 @@ public class HandManager : MonoBehaviour
         {
             highlightedCard.transform.localScale = previousScale;
             // FIXME: Hard Coding
-            highlightedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "CardsInHand";
+            highlightedCard.SetSortingLayerRecursively("CardsInHand");
             highlightedCard = null;
 
         }
@@ -124,7 +126,7 @@ public class HandManager : MonoBehaviour
         {
             selectedCard = highlightedCard;
             highlightedCard = null;
-            selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "SelectedCard";
+            selectedCard.SetSortingLayerRecursively("SelectedCard");
             mouseOffset = selectedCard.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
             //mouseOffset.z = 0;
             // FIXME: Hard Coding
@@ -139,14 +141,14 @@ public class HandManager : MonoBehaviour
             if (Vector3.SqrMagnitude(transform.position - selectedCard.transform.position) > Vector3.SqrMagnitude(BoardParent.transform.position - selectedCard.transform.position))
             {
                 // Place the selected card
-                selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "PlacedCards";
+                selectedCard.SetSortingLayerRecursively("PlacedCards");
                 selectedCard.transform.SetParent(BoardParent.transform);
                 selectedCard.transform.SetAsLastSibling();
                 selectedCard = null;
             }
             else
             {
-                selectedCard.transform.GetChild(0).GetComponent<SpriteRenderer>().sortingLayerName = "CardsInHand";
+                selectedCard.SetSortingLayerRecursively("CardsInHand");
                 //highlightedCard = selectedCard;
                 selectedCard.SetLayerRecursively(8);
                 selectedCard = null;
