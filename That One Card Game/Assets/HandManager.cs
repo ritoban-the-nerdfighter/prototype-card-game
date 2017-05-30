@@ -9,7 +9,7 @@ public class HandManager : MonoBehaviour
     //public float MaximumCardHolderPosition = 10;
     public float CardWidth = 1;
     public float Padding = 0.1f;
-    public float HighlightScaleIncrase = 1.5f;
+    public float HighlightScaleIncrease = 1.5f;
     // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
@@ -106,7 +106,7 @@ public class HandManager : MonoBehaviour
                 highlightedCard = hit.collider.transform.parent.gameObject;
                 previousScale = highlightedCard.transform.localScale;
                 // FIXME: Hard Coding in scale
-                highlightedCard.transform.localScale = previousScale * HighlightScaleIncrase;
+                highlightedCard.transform.localScale = previousScale * HighlightScaleIncrease;
                 // FIXME: Hard Coding
 
                 highlightedCard.SetSortingLayerRecursively("HighlightedCard");
@@ -141,6 +141,7 @@ public class HandManager : MonoBehaviour
             if (Vector3.SqrMagnitude(transform.position - selectedCard.transform.position) > Vector3.SqrMagnitude(BoardParent.transform.position - selectedCard.transform.position))
             {
                 // Place the selected card
+                // FIXME: What if the card is not a minion???
                 selectedCard.SetSortingLayerRecursively("PlacedCards");
                 selectedCard.transform.SetParent(BoardParent.transform);
                 selectedCard.transform.SetAsLastSibling();

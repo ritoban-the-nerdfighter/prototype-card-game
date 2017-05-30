@@ -16,4 +16,8 @@ public class CardData : ScriptableObject
     public int ManaCost;
 
     public CardType CardType;
+
+    [Header("Minion Specific Data")]
+    public int Health;
+    public int Attack;
 }

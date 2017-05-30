@@ -9,12 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6c3c49d9c997cf47ac7f653802bc15b, type: 3}
-  m_Name: Some Random Flying Robot
+  m_Name: Some Generic Spell
   m_EditorClassIdentifier: 
-  Name: Some Random Flying Robot
-  CardPortrait: {fileID: 21300000, guid: 44d745cd234752044ad8d3924b90cbae, type: 3}
-  CardText: 'Battlecry: Deal 5 Damage to a Random Enemy'
-  ManaCost: 2
-  CardType: 0
+  Name: Some Generic Spell
+  CardPortrait: {fileID: 21300000, guid: 2f9a55af5ada5d74f83ec7984720c220, type: 3}
+  CardText: Deal 4 Damage to all Minions
+  ManaCost: 6
+  CardType: 1
   Health: 2
   Attack: 3

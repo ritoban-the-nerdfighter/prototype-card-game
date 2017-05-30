@@ -15,6 +15,7 @@ public class TEST_CardCreator : MonoBehaviour
         {
             GameObject go = Instantiate(CardHolder, this.transform);
             go.GetComponent<CardHolder>().CardData = Data[Random.Range(0, Data.Length)];
+
             //go.transform.GetChild(0).GetComponent<SpriteRenderer>().color = Random.ColorHSV(0, 1, 0.8f, 1, 0.8f, 1);
         }
     }

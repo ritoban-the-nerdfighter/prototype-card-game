@@ -7,10 +7,14 @@ public class CardHolder : MonoBehaviour
 {
     public CardData CardData;
 
+    public GameObject MinionUIDataPrefab;
+
+
     public Text NameText;
     public SpriteRenderer CardPortrait;
     public Text ManaCost;
     public Text CardText;
+    public Text CardTypeText;
 
     private void Start()
     {
@@ -20,5 +24,12 @@ public class CardHolder : MonoBehaviour
         CardPortrait.sprite = CardData.CardPortrait;
         ManaCost.text = CardData.ManaCost.ToString();
         CardText.text = CardData.CardText;
+        CardTypeText.text = CardData.CardType.ToString();
+        switch (CardData.CardType)
+        {
+            case CardType.Minion:
+                Minion minion = gameObject.AddComponent<Minion>();
+                break;
+        }
     }
 }

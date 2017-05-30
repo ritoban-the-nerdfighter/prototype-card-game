@@ -310,7 +310,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardWidth: 2.1
   Padding: 0.15
-  HighlightScaleIncrase: 1.7
+  HighlightScaleIncrease: 1.5
   CardMask:
     serializedVersion: 2
     m_Bits: 768
@@ -342,6 +342,7 @@ MonoBehaviour:
   CardHolder: {fileID: 1033797585258466, guid: d7d86d914cfda2343b739978c5bd6e2d, type: 2}
   Data:
   - {fileID: 11400000, guid: 38a53b05dd3d343489a42c79fd562b0c, type: 2}
+  - {fileID: 11400000, guid: ca6c057594eceef419e173b7bcfdf9d4, type: 2}
   CardCount: 10
 --- !u!1 &1619733368
 GameObject:

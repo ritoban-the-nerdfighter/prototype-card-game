@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8a6e7a123345e004d8d00c7962590165
+timeCreated: 1496095852
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - CardData: {instanceID: 0}
+  - MinionUIDataPrefab: {fileID: 1916375597533226, guid: 29394bf6aa7261b4ea368ce78a467ac9,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
