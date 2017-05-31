@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 212193661858575110}
   m_Layer: 8
   m_Name: CardArt
-  m_TagString: Untagged
+  m_TagString: CardPortrait
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -263,7 +263,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.1, y: 1.1}
+  m_Size: {x: 1.02, y: 1.02}
   m_EdgeRadius: 0
 --- !u!114 &114081012905633314
 MonoBehaviour:

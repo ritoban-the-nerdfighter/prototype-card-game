@@ -138,6 +138,8 @@ public class HandManager : MonoBehaviour
             {
                 selectedCard.SetSortingLayerRecursively("CardsInHand");
                 selectedCard.SetLayerRecursively(8);
+                // FIXME: this is simply not scalable
+                UpdateCardPositions();
                 selectedCard = null;
             }
         }
@@ -217,12 +219,22 @@ public class HandManager : MonoBehaviour
 
     private void PlaceSelectedCard()
     {
-        // Place the selected card
-        // FIXME: What if the card is not a minion???
-        selectedCard.SetSortingLayerRecursively("PlacedCards");
-        selectedCard.transform.SetParent(BoardParent.transform);
-        selectedCard.transform.SetAsLastSibling();
-        selectedCard = null;
+        
+        CardHolder c = selectedCard.GetComponent<CardHolder>();
+        if (c.CardData.CardType == CardType.Minion)
+        {
+            // Place the selected card
+            // FIXME: What if the card is not a minion???
+            selectedCard.SetSortingLayerRecursively("PlacedCards");
+            selectedCard.transform.SetParent(BoardParent.transform);
+            selectedCard.transform.SetAsLastSibling();
+            if (c.OnCardPlaced != null)
+                c.OnCardPlaced();
+            selectedCard = null;
+        }else if(c.CardData.CardType == CardType.Spell)
+        {
+            Destroy(c.gameObject);
+        }
     }
 
     #endregion
@@ -241,7 +253,7 @@ public class HandManager : MonoBehaviour
         float delta = (max - min) / (lastChildCount - 1);
         for (int i = 0; i < lastChildCount; i++)
         {
-            Cards[i].transform.position = new Vector3(min + delta * i, this.transform.position.y);
+            Cards[i].transform.localPosition = new Vector3(min + delta * i, 0);
         }
     }
 }

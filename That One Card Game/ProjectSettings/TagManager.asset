@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - CardPortrait
   layers:
   - Default
   - TransparentFX
@@ -44,12 +45,12 @@ TagManager:
   - name: CardsInHand
     uniqueID: 3753624443
     locked: 0
+  - name: PlacedCards
+    uniqueID: 1465139223
+    locked: 0
   - name: HighlightedCard
     uniqueID: 1645231193
     locked: 0
   - name: SelectedCard
     uniqueID: 1124071853
-    locked: 0
-  - name: PlacedCards
-    uniqueID: 1465139223
     locked: 0
