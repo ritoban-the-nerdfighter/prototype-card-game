@@ -31,7 +31,7 @@ public class BoardManager : MonoBehaviour
             transform.GetChild(0).position = this.transform.position;
             return;
         }
-        float range = (hand.CardWidth + hand.Padding) * (childCount - 1) * CardHolder.CARD_PLACE_SCALE;
+        float range = (hand.CardWidth + hand.Padding) * (childCount - 1) * CardHolder.PLACED_CARD_PORTRAIT_SCALE;
         float min = -range / 2;
         float max = range / 2;
         float delta = (max - min) / (childCount - 1);

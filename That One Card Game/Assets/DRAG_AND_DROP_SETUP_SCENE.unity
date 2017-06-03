@@ -309,9 +309,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e77fa5dac8b43849bdcd1947fdbeb4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardWidth: 1.05
-  Padding: 0.075
-  HighlightScaleIncrease: 2.5
+  CardWidth: 1.575
+  Padding: 0.1125
+  HighlightScaleIncrease: 1.6666666
   CardMask:
     serializedVersion: 2
     m_Bits: 768

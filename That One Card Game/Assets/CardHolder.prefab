@@ -206,7 +206,7 @@ Transform:
   m_GameObject: {fileID: 1033797585258466}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
   m_Children:
   - {fileID: 4833023968186810}
   - {fileID: 4455071546811112}
@@ -263,7 +263,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.02, y: 1.02}
+  m_Size: {x: 1.05, y: 1.05}
   m_EdgeRadius: 0
 --- !u!114 &114081012905633314
 MonoBehaviour:
@@ -392,7 +392,7 @@ MonoBehaviour:
     type: 2}
   NameText: {fileID: 114760134011361008}
   CardPortrait: {fileID: 212193661858575110}
-  ManaCost: {fileID: 114859643912442190}
+  ManaCostText: {fileID: 114859643912442190}
   CardText: {fileID: 114302873901746718}
   CardTypeText: {fileID: 114745165358363042}
 --- !u!114 &114391617225679314

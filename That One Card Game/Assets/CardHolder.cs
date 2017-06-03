@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CardHolder : MonoBehaviour
 {
-    public static readonly float CARD_PLACE_SCALE = 1.7f;
+    public static readonly float PLACED_CARD_PORTRAIT_SCALE = 1.5f;
 
     public CardData CardData;
 
@@ -15,23 +15,36 @@ public class CardHolder : MonoBehaviour
 
     public Text NameText;
     public SpriteRenderer CardPortrait;
-    public Text ManaCost;
+    public Text ManaCostText;
     public Text CardText;
     public Text CardTypeText;
 
     public Action OnCardPlaced; // TODO: Trigger Battlecries here (or maybe later, after processing secrets?)
-    public Action OnCardEnterHand; 
-    
+    public Action OnCardEnterHand;
 
+    // TODO: What about cards that change the mana cost?
+    public int ManaCost
+    {
+        get
+        {
+            return manaCost;
+        }
+        set
+        {
+            manaCost = value;
+            ManaCostText.text = manaCost.ToString();
+        }
+    }
 
+    private int manaCost;
 
     private void Start()
     {
+        ManaCost = CardData.ManaCost;
         // Create the card based on the CardData
         // QUESTION: Should Start be called when the card exits the deck, or at the beginning of the game?
         NameText.text = CardData.Name;
         CardPortrait.sprite = CardData.CardPortrait;
-        ManaCost.text = CardData.ManaCost.ToString();
         CardText.text = CardData.CardText;
         CardTypeText.text = CardData.CardType.ToString();
         switch (CardData.CardType)
@@ -55,7 +68,7 @@ public class CardHolder : MonoBehaviour
             if (child.CompareTag("CardPortrait") == false)
                 child.gameObject.SetActive(false);
             else
-                child.transform.localScale *= CARD_PLACE_SCALE;
+                child.transform.localScale *= PLACED_CARD_PORTRAIT_SCALE;
         }
     }
 }
