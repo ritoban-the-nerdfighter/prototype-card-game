@@ -50,7 +50,7 @@ public class CardHolder : MonoBehaviour
         switch (CardData.CardType)
         {
             case CardType.Minion:
-                Minion minion = gameObject.AddComponent<Minion>();
+                gameObject.AddComponent<Minion>();
                 // FIXME: Should this be on the minion?
                 OnCardPlaced += OnCardPlaces_UpdateGraphics;
                 break;

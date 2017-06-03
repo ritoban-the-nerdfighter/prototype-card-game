@@ -124,11 +124,17 @@ public class HandManager : MonoBehaviour
         // FIXME: What if we try to click on a card that for some reason has not been set as the highlighted card? is this a bug?
         if (highlightedCard != null && Input.GetMouseButtonDown(0))
         {
+            if(TurnManager.Instance.OpponentTurn)
+            {
+                Debug.LogWarning("You cannot select cards! It's not your turn!");
+                return;
+            }
             SelectCardUnderMouse();
         }
         // another reason why we might click is to place a card
         // FIXME: Make it so that it automatically figures out where to place the card on a board
-        else if (selectedCard != null && Input.GetMouseButtonDown(0))
+        // We shouldn't need to check it it's our turn since you shouldn't even be able to select a card, but we are checking nonetheless
+        else if (TurnManager.Instance.PlayerTurn == true && selectedCard != null && Input.GetMouseButtonDown(0))
         {
             if (Vector3.SqrMagnitude(transform.position - selectedCard.transform.position) > Vector3.SqrMagnitude(BoardParent.transform.position - selectedCard.transform.position))
             {
