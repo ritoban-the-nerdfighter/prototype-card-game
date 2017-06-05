@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Minion : MonoBehaviour
 {
-    public CardData CardData;
+    public Card Card;
     public GameObject MinionUIDataPrefab;
 
     private CardHolder CardHolder;
@@ -14,7 +14,7 @@ public class Minion : MonoBehaviour
     private void Awake()
     {
         CardHolder = GetComponent<CardHolder>();
-        CardData = CardHolder.CardData;
+        Card = CardHolder.Card;
         // FIXME: SUCH AN UGLY way to do this. FIND A BETTER SOLUTION!
         MinionUIDataPrefab = CardHolder.MinionUIDataPrefab;
         SetupCardAsMinion();
@@ -27,7 +27,7 @@ public class Minion : MonoBehaviour
         GameObject UIData = Instantiate(MinionUIDataPrefab, this.transform.GetComponentInChildren<Canvas>().transform, false);
         Text[] texts = UIData.GetComponentsInChildren<Text>();
         // FIXME: what if there is more data? this hard coding is stupid! eventually, we should create a minion data ui script on the prefab that handles this
-        texts[0].text = CardData.Attack.ToString();
-        texts[1].text = CardData.Health.ToString();
+        texts[0].text = Card.Attack.ToString();
+        texts[1].text = Card.Health.ToString();
     }
 }

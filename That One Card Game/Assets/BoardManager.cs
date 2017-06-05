@@ -1,44 +1,47 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardManager : MonoBehaviour
+public class BoardManager : Singleton<BoardManager>
 {
-    public int childCount;
+    public Board Board { get; protected set; }
 
+    public BidirectionalDictionary<Card, GameObject> CardGameObjectMap { get; protected set; }
 
-    private HandManager hand;
 
     private void Start()
     {
-        childCount = transform.childCount;
-        hand = FindObjectOfType<HandManager>();
+        Board = new Board();
+        Board.OnCardAdded += OnChildAdded;
+        CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
     }
 
-    private void Update()
-    {
-        if (transform.childCount != childCount)
-        {
-            childCount = transform.childCount;
-            SendMessage("OnChildAdded");
-        }
-    }
 
-    private void OnChildAdded()
+
+    private void OnChildAdded(Card c)
     {
-        if(childCount == 1)
+        if (Board.CardCount == 1)
         {
             transform.GetChild(0).position = this.transform.position;
             return;
         }
-        float range = (hand.CardWidth + hand.Padding) * (childCount - 1) * CardHolder.PLACED_CARD_PORTRAIT_SCALE;
+        HandManager hand = HandManager.Instance;
+        float range = (hand.CardWidth + hand.Padding) * (Board.CardCount - 1);
         float min = -range / 2;
         float max = range / 2;
-        float delta = (max - min) / (childCount - 1);
+        float delta = (max - min) / (Board.CardCount - 1);
         // FIXME: This is terrible for garbage collection
-        foreach(Transform card in transform)
+        foreach (Transform card in transform)
         {
             card.position = new Vector3(min + delta * card.GetSiblingIndex(), transform.position.y);
         }
+    }
+
+    public void AddCard(Card cardToPlace, GameObject cardGO)
+    {
+        cardGO.transform.SetParent(this.transform);
+        CardGameObjectMap.Add(cardToPlace, gameObject);
+        Board.PlayCard(cardToPlace);
     }
 }

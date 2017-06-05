@@ -3,85 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandManager : MonoBehaviour
+public class HandManager : Singleton<HandManager>
 {
-    //public float MinimumCardHolderPosition = -10;
-    //public float MaximumCardHolderPosition = 10;
+    public GameObject CardPrefab;
     public float CardWidth = 1;
     public float Padding = 0.1f;
-    public float HighlightScaleIncrease = 1.5f;
     // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
-    // FIXME: This will eventually become a BidirectionalDictionary<Card, GameObject>
-    public List<GameObject> Cards { get; protected set; }
+    public Hand Hand { get; protected set; }
 
+    private Card highlightedCard = null;
 
-    public GameObject BoardParent;
-
-    // FIXME: Eventually, this is going to take in a card
-    private event Action OnCardAdded;
-    private event Action OnCardRemoved;
-    private int lastChildCount;
-
-    private GameObject highlightedCard = null;
-    private Vector3 previousScale = Vector3.one;
-
-    private GameObject selectedCard = null;
-    private Vector3 mouseOffset = Vector3.zero;
+    private Card selectedCard = null;
+    
 
     #region Unity Methods
     private void Awake()
     {
-        Cards = new List<GameObject>();
-        OnCardAdded += UpdateCardPositions;
-        OnCardRemoved += UpdateCardPositions;
+        Hand = new Hand();
+        Hand.OnCardAdded += OnCardAdded;
     }
 
 
-
-    private void Start()
-    {
-        lastChildCount = transform.childCount;
-        for (int i = 0; i < lastChildCount; i++)
-        {
-            Cards.Add(transform.GetChild(i).gameObject);
-        }
-        // FIXME: The cards that we have at the start of the game are not updated by the update method
-        // and it would be extra computation time to make it iterate through all of the cards several times on the first frame. 
-        UpdateCardPositions();
-    }
 
     private void Update()
     {
-
-        HandleNumberChildrenChanged();
         CheckCardUnderMouse();
         HandleMouseClicks();
     }
 
-    private void LateUpdate()
-    {
-        if (selectedCard != null)
-        {
-            selectedCard.transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition) + mouseOffset;
 
-        }
-    }
 
     #endregion
 
     #region Checks Every Update
-
-    private void HandleNumberChildrenChanged()
-    {
-        // If the number of children we had changed
-        if (transform.childCount != lastChildCount)
-        {
-            CheckChildAdded();
-            CheckChildRemoved();
-        }
-    }
 
 
     private void CheckCardUnderMouse()
@@ -93,7 +49,7 @@ public class HandManager : MonoBehaviour
         if (hit.collider != null && hit.collider.gameObject.layer == 8 && selectedCard == null) // if the mouse is over a card, we haven't selected a card
         {
             // and this is a different card (or we moved from no card to a card
-            if (hit.collider.gameObject != highlightedCard)
+            if (highlightedCard == null || hit.collider.gameObject != CardGameObjectMap[highlightedCard])
             {
                 // because this is a different card, reset our last card
                 if (highlightedCard != null)
@@ -101,12 +57,9 @@ public class HandManager : MonoBehaviour
                     ResetCurrentHighlightedCard();
                 }
                 // set the appropriate card and save the scale
-                highlightedCard = hit.collider.transform.parent.gameObject;
-                previousScale = highlightedCard.transform.localScale;
-                // FIXME: Hard Coding in scale
-                highlightedCard.transform.localScale = previousScale * HighlightScaleIncrease;
-                // FIXME: Hard Coding
-                highlightedCard.SetSortingLayerRecursively("HighlightedCard");
+                GameObject cardGO = hit.collider.transform.parent.gameObject;
+                cardGO.GetComponent<CardHolder>().HighlightCard();
+                highlightedCard = CardGameObjectMap[cardGO];
             }
 
         }
@@ -129,69 +82,29 @@ public class HandManager : MonoBehaviour
                 Debug.LogWarning("You cannot select cards! It's not your turn!");
                 return;
             }
-            SelectCardUnderMouse();
+            highlightedCard.Select();
         }
         // another reason why we might click is to place a card
         // FIXME: Make it so that it automatically figures out where to place the card on a board
         // We shouldn't need to check it it's our turn since you shouldn't even be able to select a card, but we are checking nonetheless
         else if (TurnManager.Instance.PlayerTurn == true && selectedCard != null && Input.GetMouseButtonDown(0))
         {
-            if (Vector3.SqrMagnitude(transform.position - selectedCard.transform.position) > Vector3.SqrMagnitude(BoardParent.transform.position - selectedCard.transform.position))
+            GameObject selectedCardGO = CardGameObjectMap[selectedCard];
+            if (Vector3.SqrMagnitude(transform.position - selectedCardGO.transform.position) > Vector3.SqrMagnitude(BoardManager.Instance.transform.position - selectedCardGO.transform.position))
             {
-                PlaceSelectedCard();
+                BoardManager.Instance.AddCard(selectedCard, CardGameObjectMap[selectedCard]);
+                CardGameObjectMap.Remove(selectedCard);
+                selectedCard.CardPlayed();
+                UpdateCardPositions();
             }
             else
             {
-                selectedCard.SetSortingLayerRecursively("CardsInHand");
-                selectedCard.SetLayerRecursively(8);
+                CardGameObjectMap[selectedCard].SetSortingLayerRecursively("CardsInHand");
+                selectedCardGO.SetLayerRecursively(8);
                 // FIXME: this is simply not scalable
                 UpdateCardPositions();
-                selectedCard = null;
             }
-        }
-    }
-
-    #endregion
-
-    #region Sub-checks every update
-
-    private void CheckChildAdded()
-    {
-        // And, we actually got 1 or more new children
-        if (transform.childCount > lastChildCount)
-        {
-            // Find the child that isn't already in the list of children
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                GameObject child = transform.GetChild(i).gameObject;
-                // FIXME: This is terrible for performance. Another reason why we need a BidirectionalDictionary<Card, GameObject>
-                if (Cards.Contains(child) == false)
-                {
-                    // FIXME: This is a really hack-ish way to handle cards that weren't added as the last child
-                    Cards.Insert(i, child);
-                    lastChildCount++;
-
-                    OnCardAdded();
-                }
-
-            }
-        }
-    }
-
-    private void CheckChildRemoved()
-    {
-        // And, we actually lost a card
-        if (transform.childCount < lastChildCount)
-        {
-
-            // FIMXE: Just completely recalculate the Cards list. WE NEED TO CALCULATE THE CARD THAT DISAPEARED
-            Cards = new List<GameObject>();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                Cards.Add(transform.GetChild(i).gameObject);
-            }
-            lastChildCount = Cards.Count;
-            OnCardRemoved();
+            selectedCard = null;
         }
     }
 
@@ -201,65 +114,63 @@ public class HandManager : MonoBehaviour
 
     private void ResetCurrentHighlightedCard()
     {
-        highlightedCard.transform.localScale = previousScale;
-        // FIXME: Hard Coding
-        highlightedCard.SetSortingLayerRecursively("CardsInHand");
+        GameObject cardGO = CardGameObjectMap[highlightedCard];
+        cardGO.GetComponent<CardHolder>().UnhighlightCard();
         highlightedCard = null;
     }
 
 
-
-
-    // FIXME: Work with the CardHolder class!
-    private void SelectCardUnderMouse()
+    // FIXME: We are not using c because should be the same as selectedCard
+    private void SelectHighlightedCard(Card c)
     {
         selectedCard = highlightedCard;
         highlightedCard = null;
-        selectedCard.SetSortingLayerRecursively("SelectedCard");
-        mouseOffset = selectedCard.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        // FIXME: Hard Coding
-        selectedCard.SetLayerRecursively(9);
-        selectedCard.transform.localScale = previousScale;
-        previousScale = Vector3.one;
-    }
-
-    private void PlaceSelectedCard()
-    {
-        
-        CardHolder c = selectedCard.GetComponent<CardHolder>();
-        if (c.CardData.CardType == CardType.Minion)
-        {
-            // Place the selected card
-            // FIXME: What if the card is not a minion???
-            selectedCard.SetSortingLayerRecursively("PlacedCards");
-            selectedCard.transform.SetParent(BoardParent.transform);
-            selectedCard.transform.SetAsLastSibling();
-            if (c.OnCardPlaced != null)
-                c.OnCardPlaced();
-            selectedCard = null;
-        }else if(c.CardData.CardType == CardType.Spell)
-        {
-            Destroy(c.gameObject);
-        }
+        GameObject cardGO = CardGameObjectMap[selectedCard];
+        cardGO.GetComponent<CardHolder>().SelectCard();
+   
     }
 
     #endregion
     // TODO: Setup animations
+    // FIXME: Base off the data layer rather than the number of children
     private void UpdateCardPositions()
     {
-        if (lastChildCount == 1)
+        int cardCount = Hand.CardCount;
+        if (cardCount == 1)
         {
             transform.GetChild(0).position = this.transform.position;
             return;
         }
 
-        float range = (CardWidth + Padding) * (lastChildCount - 1);
+        float range = (CardWidth + Padding) * (cardCount - 1);
         float min = -range / 2;
         float max = range / 2;
-        float delta = (max - min) / (lastChildCount - 1);
-        for (int i = 0; i < lastChildCount; i++)
+        float delta = (max - min) / (cardCount - 1);
+        for (int i = 0; i < cardCount; i++)
         {
-            Cards[i].transform.localPosition = new Vector3(min + delta * i, 0);
+            CardGameObjectMap[Hand.Cards[i]].transform.localPosition = new Vector3(min + delta * i, 0);
         }
     }
+
+    #region Handle Number of Cards Changed
+
+    public BidirectionalDictionary<Card, GameObject> CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>(); 
+
+    private void OnCardAdded(Card c)
+    {
+        // Create a Card GameObject
+        // FIXME: Should the card be handling card selecting???
+        c.OnCardSelected += SelectHighlightedCard;
+        GameObject cardGO = Instantiate(CardPrefab, this.transform);
+        CardHolder holder = cardGO.GetComponent<CardHolder>();
+        holder.Card = c;
+        if(c.OnEnterHand != null)
+        {
+            c.OnEnterHand();
+        }
+        CardGameObjectMap.Add(c, cardGO);
+        UpdateCardPositions();
+    }
+
+    #endregion
 }

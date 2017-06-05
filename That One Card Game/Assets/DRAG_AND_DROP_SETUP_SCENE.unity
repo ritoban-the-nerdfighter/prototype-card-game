@@ -597,13 +597,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e77fa5dac8b43849bdcd1947fdbeb4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CardPrefab: {fileID: 1033797585258466, guid: d7d86d914cfda2343b739978c5bd6e2d, type: 2}
   CardWidth: 1.575
   Padding: 0.1125
   HighlightScaleIncrease: 1.6666666
   CardMask:
     serializedVersion: 2
     m_Bits: 768
-  BoardParent: {fileID: 878698546}
 --- !u!4 &1445758918
 Transform:
   m_ObjectHideFlags: 0
@@ -628,10 +628,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11d53f3c597582a4e92214f8526c5bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardHolder: {fileID: 1033797585258466, guid: d7d86d914cfda2343b739978c5bd6e2d, type: 2}
-  Data:
-  - {fileID: 11400000, guid: 38a53b05dd3d343489a42c79fd562b0c, type: 2}
+  Deck:
   - {fileID: 11400000, guid: ca6c057594eceef419e173b7bcfdf9d4, type: 2}
+  - {fileID: 11400000, guid: 38a53b05dd3d343489a42c79fd562b0c, type: 2}
   CardCount: 10
 --- !u!1 &1619733368
 GameObject:
