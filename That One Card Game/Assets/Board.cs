@@ -7,7 +7,7 @@ using System.Text;
 public class Board
 {
     public List<Card> Cards { get; protected set; }
-    public event Action<Card> OnCardAdded;
+    public event Action<Card> OnMinionAdded;
 
     public int CardCount
     {
@@ -24,9 +24,16 @@ public class Board
 
     public void PlayCard(Card c)
     {
-        Cards.Add(c);
-        if (OnCardAdded != null)
-            OnCardAdded(c);
+        if (c.CardData.CardType == CardType.Minion)
+        {
+            Cards.Add(c);
+            if (OnMinionAdded != null)
+                OnMinionAdded(c);
+        }
+        else if(c.CardData.CardType == CardType.Spell)
+        {
+            // FIXME: What should we do here? Should this even be in this class?
+        }
     }
 
     // FIXME: We should have a centralized Random Manager (maybe so that people could share seeds?)

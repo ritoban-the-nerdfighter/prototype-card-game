@@ -13,7 +13,7 @@ public class BoardManager : Singleton<BoardManager>
     private void Start()
     {
         Board = new Board();
-        Board.OnCardAdded += OnChildAdded;
+        Board.OnMinionAdded += OnChildAdded;
         CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
     }
 
