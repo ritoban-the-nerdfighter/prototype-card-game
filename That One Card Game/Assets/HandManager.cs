@@ -11,7 +11,7 @@ public class HandManager : Singleton<HandManager>
     // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
-    public Hand Hand { get; protected set; }
+    public Hand PlayerHand { get; protected set; }
 
     private Card highlightedCard = null;
 
@@ -21,8 +21,8 @@ public class HandManager : Singleton<HandManager>
     #region Unity Methods
     private void Awake()
     {
-        Hand = new Hand();
-        Hand.OnCardAdded += OnCardAdded;
+        PlayerHand = new Hand();
+        PlayerHand.OnCardAdded += OnCardAdded;
     }
 
 
@@ -92,10 +92,11 @@ public class HandManager : Singleton<HandManager>
             GameObject selectedCardGO = CardGameObjectMap[selectedCard];
             if (Vector3.SqrMagnitude(transform.position - selectedCardGO.transform.position) > Vector3.SqrMagnitude(BoardManager.Instance.transform.position - selectedCardGO.transform.position))
             {
-                BoardManager.Instance.AddCard(selectedCard, CardGameObjectMap[selectedCard]);
+                BoardManager.Instance.AddCardGameObject(selectedCard, CardGameObjectMap[selectedCard]); // FIXME: This should be using Board.Play
+                
                 CardGameObjectMap.Remove(selectedCard);
                 selectedCard.CardPlayed();
-                UpdateCardPositions();
+                UpdateCardPositions(); // FIXME: SHould we instead add this onto the cardPlayed callbac
             }
             else
             {
@@ -135,7 +136,7 @@ public class HandManager : Singleton<HandManager>
     // FIXME: Base off the data layer rather than the number of children
     private void UpdateCardPositions()
     {
-        int cardCount = Hand.CardCount;
+        int cardCount = PlayerHand.CardCount;
         if (cardCount == 1)
         {
             transform.GetChild(0).position = this.transform.position;
@@ -148,7 +149,7 @@ public class HandManager : Singleton<HandManager>
         float delta = (max - min) / (cardCount - 1);
         for (int i = 0; i < cardCount; i++)
         {
-            CardGameObjectMap[Hand.Cards[i]].transform.localPosition = new Vector3(min + delta * i, 0);
+            CardGameObjectMap[PlayerHand.Cards[i]].transform.localPosition = new Vector3(min + delta * i, 0);
         }
     }
 

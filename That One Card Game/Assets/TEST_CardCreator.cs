@@ -11,7 +11,7 @@ public class TEST_CardCreator : MonoBehaviour
     {
         for (int i = 0; i < CardCount; i++)
         {
-            HandManager.Instance.Hand.AddCard(new Card(Deck[i % Deck.Length]));
+            HandManager.Instance.PlayerHand.AddCard(new Card(Deck[i % Deck.Length]));
         }
     }
 }

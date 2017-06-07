@@ -387,7 +387,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4785a32e4198ae847a202b224cc36180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardData: {fileID: 0}
   MinionUIDataPrefab: {fileID: 1916375597533226, guid: 29394bf6aa7261b4ea368ce78a467ac9,
     type: 2}
   NameText: {fileID: 114760134011361008}
@@ -395,6 +394,9 @@ MonoBehaviour:
   ManaCostText: {fileID: 114859643912442190}
   CardText: {fileID: 114302873901746718}
   CardTypeText: {fileID: 114745165358363042}
+  ChildrenToDisableOnPlay:
+  - {fileID: 1352622548557110}
+  - {fileID: 1326801796916112}
 --- !u!114 &114391617225679314
 MonoBehaviour:
   m_ObjectHideFlags: 1

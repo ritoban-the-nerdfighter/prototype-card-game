@@ -14,7 +14,7 @@ public class Card
     public int Attack;
 
     public Action OnEnterHand;
-   
+    public Action<Card> OnCardPlayed;
 
     public Card(CardData cardData)
     {
@@ -26,7 +26,6 @@ public class Card
 
 
     public event Action<Card> OnCardSelected;
-    public event Action<Card> OnCardPlayed;
 
     public void Select()
     {
@@ -34,6 +33,9 @@ public class Card
             OnCardSelected(this);
     }
 
+    /// <summary>
+    /// This just calls the OnCardPlayed method
+    /// </summary>
     public void CardPlayed()
     {
         if (OnCardPlayed != null)
