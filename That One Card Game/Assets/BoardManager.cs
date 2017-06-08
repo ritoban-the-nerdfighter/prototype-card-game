@@ -5,8 +5,15 @@ using UnityEngine;
 
 public class BoardManager : Singleton<BoardManager>
 {
+    public float CardWidth = 2;
+    public float Padding = 0.12f;
+
     public Board PlayerBoard { get; protected set; }
     public Board OpponentBoard { get; protected set; }
+
+    private Transform playerBoardParent;
+    private Transform opponentBoardParent;
+
 
     public BidirectionalDictionary<Card, GameObject> CardGameObjectMap { get; protected set; }
 
@@ -14,43 +21,57 @@ public class BoardManager : Singleton<BoardManager>
     private void Start()
     {
         PlayerBoard = new Board();
-        PlayerBoard.OnMinionAdded += OnChildAdded;
+        PlayerBoard.OnMinionAdded += SetupPlayerCardGameObject;
+        // ALERT: This relies on these being called in order
+        PlayerBoard.OnMinionAdded += UpdateCardPositionsWrapper;
         OpponentBoard = new Board();
-        CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
+        OpponentBoard.OnMinionAdded += SetupPlayerCardGameObject;
+        // ALERT: This relies on these being called in order
+        OpponentBoard.OnMinionAdded += UpdateCardPositionsWrapper; CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
+
+        playerBoardParent = new GameObject("Player Board").transform;
+        playerBoardParent.SetParent(this.transform);
+        playerBoardParent.localPosition = new Vector3(0, -1.5f);
+        playerBoardParent.localScale = Vector3.one;
+
+        opponentBoardParent = new GameObject("Opponent Board").transform;
+        opponentBoardParent.SetParent(this.transform);
+        opponentBoardParent.localPosition = new Vector3(0, 1.5f);
+        opponentBoardParent.localScale = Vector3.one;
+
+    }
+
+    private void SetupPlayerCardGameObject(Card c)
+    {
+        GameObject cardGO = CardManager.Instance.GetGameObjectForCardOnBoard(c, TurnManager.Instance.PlayerTurn ? playerBoardParent : opponentBoardParent);
+        CardGameObjectMap.Add(c, cardGO);
     }
 
 
-
-    private void OnChildAdded(Card c)
+    private void UpdateCardPositionsWrapper(Card c)
     {
-        if (PlayerBoard.CardCount == 1)
+        UpdateCardPositions(c, TurnManager.Instance.PlayerTurn);
+    }
+
+    private void UpdateCardPositions(Card c, bool player)
+    {
+        Transform boardParent = player ? playerBoardParent : opponentBoardParent;
+        Board board = (player ? PlayerBoard : OpponentBoard);
+        if (board.CardCount == 1)
         {
-            transform.GetChild(0).position = this.transform.position;
+            boardParent.GetChild(0).position = boardParent.position;
             return;
         }
         HandManager hand = HandManager.Instance;
-        float range = (hand.CardWidth + hand.Padding) * (PlayerBoard.CardCount - 1);
+        float range = (CardWidth + Padding) * (board.CardCount - 1);
         float min = -range / 2;
         float max = range / 2;
-        float delta = (max - min) / (PlayerBoard.CardCount - 1);
+        float delta = (max - min) / (board.CardCount - 1);
         // FIXME: This is terrible for garbage collection
-        foreach (Transform card in transform)
+        foreach (Transform card in boardParent)
         {
-            card.position = new Vector3(min + delta * card.GetSiblingIndex(), transform.position.y);
+            card.localPosition = new Vector3(min + delta * card.GetSiblingIndex(), 0);
         }
     }
 
-    
-    public void AddCardGameObject(Card cardToPlace, GameObject cardGO)
-    {
-        cardGO.transform.SetParent(this.transform);
-        CardGameObjectMap.Add(cardToPlace, gameObject);
-        PlayerBoard.PlayCard(cardToPlace);
-    }
-
-    /*
-     * Ways to transfer card gameobject:
-     *  CardManager that keeps track of gameobjects for all possible cards
-     *  CardManager that generates a new gameObject givern a card
-     */
 }

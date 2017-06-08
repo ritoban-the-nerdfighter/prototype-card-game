@@ -25,21 +25,7 @@ public class Card
     }
 
 
-    public event Action<Card> OnCardSelected;
+    public Action<Card> OnCardSelected;
 
-    public void Select()
-    {
-        if (OnCardSelected != null)
-            OnCardSelected(this);
-    }
-
-    /// <summary>
-    /// This just calls the OnCardPlayed method
-    /// </summary>
-    public void CardPlayed()
-    {
-        if (OnCardPlayed != null)
-            OnCardPlayed(this);
-    }
 }
 

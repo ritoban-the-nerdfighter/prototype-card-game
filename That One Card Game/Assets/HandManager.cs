@@ -16,7 +16,7 @@ public class HandManager : Singleton<HandManager>
     private Card highlightedCard = null;
 
     private Card selectedCard = null;
-    
+
 
     #region Unity Methods
     private void Awake()
@@ -72,41 +72,52 @@ public class HandManager : Singleton<HandManager>
 
     // FIXME: create a more centralized mouse manager
     private void HandleMouseClicks()
-    {
+    {   
         // if we click the mouse over a card in the hand (which, presumably, is the highlighted card)
         // FIXME: What if we try to click on a card that for some reason has not been set as the highlighted card? is this a bug?
         if (highlightedCard != null && Input.GetMouseButtonDown(0))
         {
-            if(TurnManager.Instance.OpponentTurn)
+            if (TurnManager.Instance.OpponentTurn)
             {
                 Debug.LogWarning("You cannot select cards! It's not your turn!");
                 return;
             }
-            highlightedCard.Select();
+            if (highlightedCard.OnCardSelected != null)
+                highlightedCard.OnCardSelected(highlightedCard);
+
         }
         // another reason why we might click is to place a card
         // FIXME: Make it so that it automatically figures out where to place the card on a board
         // We shouldn't need to check it it's our turn since you shouldn't even be able to select a card, but we are checking nonetheless
+
         else if (TurnManager.Instance.PlayerTurn == true && selectedCard != null && Input.GetMouseButtonDown(0))
         {
             GameObject selectedCardGO = CardGameObjectMap[selectedCard];
             if (Vector3.SqrMagnitude(transform.position - selectedCardGO.transform.position) > Vector3.SqrMagnitude(BoardManager.Instance.transform.position - selectedCardGO.transform.position))
             {
-                BoardManager.Instance.AddCardGameObject(selectedCard, CardGameObjectMap[selectedCard]); // FIXME: This should be using Board.Play
-                
+
+                GameObject cardGO = CardGameObjectMap[selectedCard];
                 CardGameObjectMap.Remove(selectedCard);
-                selectedCard.CardPlayed();
-                UpdateCardPositions(); // FIXME: SHould we instead add this onto the cardPlayed callbac
+                // FIXME: Animations!
+                Destroy(cardGO);
+                BoardManager.Instance.PlayerBoard.PlayCard(selectedCard);
+                UpdateCardPositions(); // FIXME: SHould we instead add this onto the cardPlayed callback
+                selectedCard = null;
+
             }
             else
             {
                 CardGameObjectMap[selectedCard].SetSortingLayerRecursively("CardsInHand");
+                CardGameObjectMap[selectedCard].GetComponent<CardHolder>().UnSelectCard();
                 selectedCardGO.SetLayerRecursively(8);
                 // FIXME: this is simply not scalable
+                selectedCard = null;
                 UpdateCardPositions();
+                
             }
-            selectedCard = null;
+
         }
+
     }
 
     #endregion
@@ -128,7 +139,7 @@ public class HandManager : Singleton<HandManager>
         highlightedCard = null;
         GameObject cardGO = CardGameObjectMap[selectedCard];
         cardGO.GetComponent<CardHolder>().SelectCard();
-   
+
     }
 
     #endregion
@@ -155,17 +166,15 @@ public class HandManager : Singleton<HandManager>
 
     #region Handle Number of Cards Changed
 
-    public BidirectionalDictionary<Card, GameObject> CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>(); 
+    public BidirectionalDictionary<Card, GameObject> CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
 
     private void OnCardAdded(Card c)
     {
         // Create a Card GameObject
         // FIXME: Should the card be handling card selecting???
         c.OnCardSelected += SelectHighlightedCard;
-        GameObject cardGO = Instantiate(CardPrefab, this.transform);
-        CardHolder holder = cardGO.GetComponent<CardHolder>();
-        holder.Card = c;
-        if(c.OnEnterHand != null)
+        GameObject cardGO = CardManager.Instance.GetGameObjectForCardInHand(c, this.transform);
+        if (c.OnEnterHand != null)
         {
             c.OnEnterHand();
         }

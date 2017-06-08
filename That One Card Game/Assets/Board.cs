@@ -24,7 +24,8 @@ public class Board
 
     public void PlayCard(Card c)
     {
-        c.CardPlayed();
+        if (c.OnCardPlayed != null)
+            c.OnCardPlayed(c);
         if (c.CardData.CardType == CardType.Minion)
         {
             Cards.Add(c);

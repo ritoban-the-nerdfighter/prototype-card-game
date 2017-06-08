@@ -11,6 +11,7 @@ public class OpponentManager : MonoBehaviour
 
     public CardData[] CardData;
 
+    // FIXME: The BoardManager stores both players hands, but the HandManager stores only 1 players hand
     public Hand Hand { get; protected set; }
 
     private void Awake()

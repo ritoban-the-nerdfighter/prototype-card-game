@@ -20,7 +20,6 @@ public class CardHolder : MonoBehaviour
     public Text CardText;
     public Text CardTypeText;
 
-    public GameObject[] ChildrenToDisableOnPlay;
 
     // TODO: What about cards that change the mana cost?
     public int ManaCost
@@ -38,6 +37,11 @@ public class CardHolder : MonoBehaviour
 
     private int manaCost;
 
+    private void Awake()
+    {
+        CardSelected = false;
+    }
+
     private void Start()
     {
         ManaCost = Card.ManaCost;
@@ -54,11 +58,6 @@ public class CardHolder : MonoBehaviour
                 // FIXME: Should this be on the minion?
                 break;
         }
-
-        // FIXME: I would do this in awake, but we need to let TEST_CardCreator and HandManager's awake run first
-        CardSelected = false;
-        Card.OnCardPlayed += CardPlayed;
-
     }
 
 
@@ -84,26 +83,7 @@ public class CardHolder : MonoBehaviour
 
     private Vector3 select_MouseOffset = Vector3.zero;
 
-    // FIXME: We are not using c because it is the same as CArd
-    private void CardPlayed(Card c)
-    {
-        if (c.CardData.CardType == CardType.Minion)
-        {
-            // Disable everything except the CardPortrait, which we should scale up
-            // TODO: Animations
-            for (int i = 0; i < ChildrenToDisableOnPlay.Length; i++)
-            {
-                ChildrenToDisableOnPlay[i].gameObject.SetActive(false);
-            }
-            select_MouseOffset = Vector3.zero;
-            CardSelected = false;
-        }
-        else if (c.CardData.CardType == CardType.Spell)
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
+
 
     public void SelectCard()
     {
@@ -113,6 +93,14 @@ public class CardHolder : MonoBehaviour
         gameObject.SetLayerRecursively(9);
         this.transform.localScale = previousScale;
         previousScale = Vector3.one;
+    }
+
+    public void UnSelectCard()
+    {
+        gameObject.SetSortingLayerRecursively("CardsInHand");
+        CardSelected = false;
+        select_MouseOffset = Vector3.zero;
+        gameObject.SetLayerRecursively(8);
     }
 
     private void LateUpdate()
