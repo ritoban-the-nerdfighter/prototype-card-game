@@ -39,7 +39,7 @@ public class Board
     }
 
     // FIXME: We should have a centralized Random Manager (maybe so that people could share seeds?)
-    public Card GetRandomCardInHand(Random r)
+    public Card GetRandomCardOnBoard(Random r)
     {
         return Cards[r.Next(Cards.Count)];
     }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CardHolder : MonoBehaviour
 {
-    public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 1.5f;
+    public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 3.5f;
 
 
     public Card Card;
@@ -19,6 +19,8 @@ public class CardHolder : MonoBehaviour
     public Text ManaCostText;
     public Text CardText;
     public Text CardTypeText;
+
+    public Transform CardCollider;
 
 
     // TODO: What about cards that change the mana cost?
@@ -58,16 +60,21 @@ public class CardHolder : MonoBehaviour
                 // FIXME: Should this be on the minion?
                 break;
         }
+        Card.OnCardPlayed += OnCardPlayed;
     }
 
+    private void OnCardPlayed(Card c)
+    {
+        gameObject.SetSortingLayerRecursively("CardsOnBoard");
+    }
 
     Vector3 previousScale = Vector3.one;
 
     public void HighlightCard()
     {
         previousScale = gameObject.transform.localScale;
-        // FIXME: Hard Coding in scale
         gameObject.transform.localScale = previousScale * CARD_HIGHLIGHT_SCALE_INCREASE;
+        CardCollider.localScale = CardCollider.transform.localScale / CARD_HIGHLIGHT_SCALE_INCREASE;
         // FIXME: Hard Coding
         gameObject.SetSortingLayerRecursively("HighlightedCard");
     }
@@ -75,6 +82,7 @@ public class CardHolder : MonoBehaviour
     public void UnhighlightCard()
     {
         this.transform.localScale = previousScale;
+        CardCollider.localScale = CardCollider.transform.localScale * CARD_HIGHLIGHT_SCALE_INCREASE;
         gameObject.SetSortingLayerRecursively("CardsInHand");
     }
 

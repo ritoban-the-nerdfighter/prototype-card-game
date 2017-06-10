@@ -45,6 +45,9 @@ TagManager:
   - name: CardsInHand
     uniqueID: 3753624443
     locked: 0
+  - name: CardsOnBoard
+    uniqueID: 1866319805
+    locked: 0
   - name: PlacedCards
     uniqueID: 1465139223
     locked: 0

@@ -8,6 +8,9 @@ public class HandManager : Singleton<HandManager>
     public GameObject CardPrefab;
     public float CardWidth = 1;
     public float Padding = 0.1f;
+    public Vector2 MaxDistanceFromBoardCenter;
+    public Vector2 BoardCenter;
+
     // TODO: Add different axes (x, y) for positioning cards
     public LayerMask CardMask;
 
@@ -34,6 +37,45 @@ public class HandManager : Singleton<HandManager>
     }
 
 
+    private void OnDrawGizmos()
+    {
+        if (BoardManager.Instance == null)
+            return;
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(
+            new Vector3(
+                BoardCenter.x - MaxDistanceFromBoardCenter.x, 
+                BoardCenter.y - MaxDistanceFromBoardCenter.y),
+            new Vector3(
+                BoardCenter.x + MaxDistanceFromBoardCenter.x,
+                BoardCenter.y - MaxDistanceFromBoardCenter.y)
+                );
+        Gizmos.DrawLine(
+            new Vector3(
+                BoardCenter.x - MaxDistanceFromBoardCenter.x,
+                BoardCenter.y + MaxDistanceFromBoardCenter.y),
+            new Vector3(
+                BoardCenter.x + MaxDistanceFromBoardCenter.x,
+                BoardCenter.y + MaxDistanceFromBoardCenter.y)
+                );
+        Gizmos.DrawLine(
+            new Vector3(
+                BoardCenter.x - MaxDistanceFromBoardCenter.x,
+                BoardCenter.y - MaxDistanceFromBoardCenter.y),
+            new Vector3(
+                BoardCenter.x - MaxDistanceFromBoardCenter.x,
+                BoardCenter.y + MaxDistanceFromBoardCenter.y)
+                );
+        Gizmos.DrawLine(
+            new Vector3(
+                BoardCenter.x + MaxDistanceFromBoardCenter.x,
+                BoardCenter.y - MaxDistanceFromBoardCenter.y),
+            new Vector3(
+                BoardCenter.x + MaxDistanceFromBoardCenter.x,
+                BoardCenter.y + MaxDistanceFromBoardCenter.y)
+                );
+    }
+
 
     #endregion
 
@@ -57,7 +99,7 @@ public class HandManager : Singleton<HandManager>
                     ResetCurrentHighlightedCard();
                 }
                 // set the appropriate card and save the scale
-                GameObject cardGO = hit.collider.transform.parent.gameObject;
+                GameObject cardGO = hit.collider.transform.parent.parent.gameObject;
                 cardGO.GetComponent<CardHolder>().HighlightCard();
                 highlightedCard = CardGameObjectMap[cardGO];
             }
@@ -93,7 +135,8 @@ public class HandManager : Singleton<HandManager>
         else if (TurnManager.Instance.PlayerTurn == true && selectedCard != null && Input.GetMouseButtonDown(0))
         {
             GameObject selectedCardGO = CardGameObjectMap[selectedCard];
-            if (Vector3.SqrMagnitude(transform.position - selectedCardGO.transform.position) > Vector3.SqrMagnitude(BoardManager.Instance.transform.position - selectedCardGO.transform.position))
+            if (Mathf.Abs(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - BoardCenter.x) < MaxDistanceFromBoardCenter.x &&
+                Mathf.Abs(Camera.main.ScreenToWorldPoint(Input.mousePosition).y - BoardCenter.y) < MaxDistanceFromBoardCenter.y)
             {
 
                 GameObject cardGO = CardGameObjectMap[selectedCard];
