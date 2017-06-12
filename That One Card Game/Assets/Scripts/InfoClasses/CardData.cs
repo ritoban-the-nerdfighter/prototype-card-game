@@ -20,4 +20,11 @@ public class CardData : ScriptableObject
     [Header("Minion Specific Data")]
     public int Health;
     public int Attack;
+
+
+    [Header("Actions")]
+    public string ActionFile;
+    public string TurnStartedMethod;
+    public string TurnEndedMethod;
+   
 }

@@ -74,7 +74,7 @@ public class CardHolder_Hand : MonoBehaviour
     {
         previousScale = gameObject.transform.localScale;
         gameObject.transform.localScale = previousScale * CARD_HIGHLIGHT_SCALE_INCREASE;
-        Debug.Log("HighlightCard");
+        //Debug.Log("HighlightCard");
         CardCollider.localScale = CardCollider.transform.localScale / CARD_HIGHLIGHT_SCALE_INCREASE;
         // FIXME: Hard Coding
         gameObject.SetSortingLayerRecursively("HighlightedCard");
@@ -83,7 +83,7 @@ public class CardHolder_Hand : MonoBehaviour
     public void UnhighlightCard()
     {
         this.transform.localScale = previousScale;
-        Debug.Log("UnhighlightCard");
+        //Debug.Log("UnhighlightCard");
         CardCollider.localScale = CardCollider.transform.localScale * CARD_HIGHLIGHT_SCALE_INCREASE;
         gameObject.SetSortingLayerRecursively("CardsInHand");
     }
