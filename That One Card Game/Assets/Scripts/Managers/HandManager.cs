@@ -39,8 +39,6 @@ public class HandManager : Singleton<HandManager>
 
     private void OnDrawGizmos()
     {
-        if (BoardManager.Instance == null)
-            return;
         Gizmos.color = Color.green;
         Gizmos.DrawLine(
             new Vector3(
@@ -86,21 +84,21 @@ public class HandManager : Singleton<HandManager>
     {
         // Calculate Card Under Mouse
         // FIXME: ADD ANIMATIONS!!
-        RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition), 12, CardMask);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
         // FIXME: Hard Coding in layer. Layer HighlightedCards may not always be layer 8
         if (hit.collider != null && hit.collider.gameObject.layer == 8 && selectedCard == null) // if the mouse is over a card, we haven't selected a card
         {
             // and this is a different card (or we moved from no card to a card
-            if (highlightedCard == null || hit.collider.gameObject != CardGameObjectMap[highlightedCard])
+            if (highlightedCard == null || (hit.collider.gameObject != CardGameObjectMap[highlightedCard]))
             {
                 // because this is a different card, reset our last card
                 if (highlightedCard != null)
                 {
                     ResetCurrentHighlightedCard();
                 }
-                // set the appropriate card and save the scale
+                // FIXME: Hard Coding
                 GameObject cardGO = hit.collider.transform.parent.parent.gameObject;
-                cardGO.GetComponent<CardHolder>().HighlightCard();
+                cardGO.GetComponent<CardHolder_Hand>().HighlightCard();
                 highlightedCard = CardGameObjectMap[cardGO];
             }
 
@@ -151,7 +149,7 @@ public class HandManager : Singleton<HandManager>
             else
             {
                 CardGameObjectMap[selectedCard].SetSortingLayerRecursively("CardsInHand");
-                CardGameObjectMap[selectedCard].GetComponent<CardHolder>().UnSelectCard();
+                CardGameObjectMap[selectedCard].GetComponent<CardHolder_Hand>().UnSelectCard();
                 selectedCardGO.SetLayerRecursively(8);
                 // FIXME: this is simply not scalable
                 selectedCard = null;
@@ -170,7 +168,7 @@ public class HandManager : Singleton<HandManager>
     private void ResetCurrentHighlightedCard()
     {
         GameObject cardGO = CardGameObjectMap[highlightedCard];
-        cardGO.GetComponent<CardHolder>().UnhighlightCard();
+        cardGO.GetComponent<CardHolder_Hand>().UnhighlightCard();
         highlightedCard = null;
     }
 
@@ -181,7 +179,7 @@ public class HandManager : Singleton<HandManager>
         selectedCard = highlightedCard;
         highlightedCard = null;
         GameObject cardGO = CardGameObjectMap[selectedCard];
-        cardGO.GetComponent<CardHolder>().SelectCard();
+        cardGO.GetComponent<CardHolder_Hand>().SelectCard();
 
     }
 

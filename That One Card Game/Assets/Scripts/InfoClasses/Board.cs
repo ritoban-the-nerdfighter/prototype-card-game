@@ -35,6 +35,7 @@ public class Board
         else if(c.CardData.CardType == CardType.Spell)
         {
             // FIXME: What should we do here? Should this even be in this class?
+            
         }
     }
 

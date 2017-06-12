@@ -9,11 +9,11 @@ public class Minion : MonoBehaviour
     public Card Card;
     public GameObject MinionUIDataPrefab;
 
-    private CardHolder CardHolder;
+    private CardHolder_Hand CardHolder;
 
     private void Awake()
     {
-        CardHolder = GetComponent<CardHolder>();
+        CardHolder = GetComponent<CardHolder_Hand>();
         Card = CardHolder.Card;
         // FIXME: SUCH AN UGLY way to do this. FIND A BETTER SOLUTION!
         MinionUIDataPrefab = CardHolder.MinionUIDataPrefab;

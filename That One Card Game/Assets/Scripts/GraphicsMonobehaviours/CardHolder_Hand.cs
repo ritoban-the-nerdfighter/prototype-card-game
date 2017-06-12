@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardHolder : MonoBehaviour
+public class CardHolder_Hand : MonoBehaviour
 {
     public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 3.5f;
 
@@ -74,6 +74,7 @@ public class CardHolder : MonoBehaviour
     {
         previousScale = gameObject.transform.localScale;
         gameObject.transform.localScale = previousScale * CARD_HIGHLIGHT_SCALE_INCREASE;
+        Debug.Log("HighlightCard");
         CardCollider.localScale = CardCollider.transform.localScale / CARD_HIGHLIGHT_SCALE_INCREASE;
         // FIXME: Hard Coding
         gameObject.SetSortingLayerRecursively("HighlightedCard");
@@ -82,6 +83,7 @@ public class CardHolder : MonoBehaviour
     public void UnhighlightCard()
     {
         this.transform.localScale = previousScale;
+        Debug.Log("UnhighlightCard");
         CardCollider.localScale = CardCollider.transform.localScale * CARD_HIGHLIGHT_SCALE_INCREASE;
         gameObject.SetSortingLayerRecursively("CardsInHand");
     }
@@ -95,6 +97,8 @@ public class CardHolder : MonoBehaviour
 
     public void SelectCard()
     {
+        // HACK: We need to unhighlight the card before we select it!
+        UnhighlightCard();
         gameObject.SetSortingLayerRecursively("SelectedCard");
         CardSelected = true;
         select_MouseOffset = this.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition);

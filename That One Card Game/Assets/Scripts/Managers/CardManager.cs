@@ -14,7 +14,7 @@ public class CardManager : Singleton<CardManager>
     public GameObject GetGameObjectForCardInHand(Card c, Transform parent)
     {
         GameObject cardGO = Instantiate(cardHolderPrefab, parent);
-        CardHolder holder = cardGO.GetComponent<CardHolder>();
+        CardHolder_Hand holder = cardGO.GetComponent<CardHolder_Hand>();
         holder.Card = c;
         return cardGO;
     }
