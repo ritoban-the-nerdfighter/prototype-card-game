@@ -48,8 +48,8 @@ TagManager:
   - name: CardsOnBoard
     uniqueID: 1866319805
     locked: 0
-  - name: PlacedCards
-    uniqueID: 1465139223
+  - name: Canvas
+    uniqueID: 1743702753
     locked: 0
   - name: HighlightedCard
     uniqueID: 1645231193

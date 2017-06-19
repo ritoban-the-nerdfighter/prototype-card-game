@@ -4,14 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardHolder_Hand : MonoBehaviour
+public class CardHolder_Hand : CardHolder
 {
     public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 3.5f;
-
-
-    public Card Card;
-
-    public GameObject MinionUIDataPrefab;
 
 
     public Text NameText;

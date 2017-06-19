@@ -4,19 +4,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(CardHolder))]
 public class Minion : MonoBehaviour
 {
-    public Card Card;
-    public GameObject MinionUIDataPrefab;
+    public static string MINION_UI_PREFAB_NAME = "MinionUIPrefab";
 
-    private CardHolder_Hand CardHolder;
+
+    public Card Card
+    {
+        get
+        {
+            return GetComponent<CardHolder>().Card;
+        }
+    }
+
+    private CardHolder CardHolder;
 
     private void Awake()
     {
         CardHolder = GetComponent<CardHolder_Hand>();
-        Card = CardHolder.Card;
         // FIXME: SUCH AN UGLY way to do this. FIND A BETTER SOLUTION!
-        MinionUIDataPrefab = CardHolder.MinionUIDataPrefab;
         SetupCardAsMinion();
     }
 
@@ -24,10 +31,27 @@ public class Minion : MonoBehaviour
     {
         // CREATE HEALTH AND ATTACK UI VALUES
         // FIXME: Hard coding in canvas as parent
-        GameObject UIData = Instantiate(MinionUIDataPrefab, this.transform.GetComponentInChildren<Canvas>().transform, false);
+        GameObject UIData = Instantiate(ResourceManager.Instance.GetResourcePrefab(MINION_UI_PREFAB_NAME),
+            this.transform.GetComponentInChildren<Canvas>().transform, false);
         Text[] texts = UIData.GetComponentsInChildren<Text>();
-        // FIXME: what if there is more data? this hard coding is stupid! eventually, we should create a minion data ui script on the prefab that handles this
-        texts[0].text = Card.Attack.ToString();
-        texts[1].text = Card.Health.ToString();
+
+        // FIXME: Card should have a "Statistics" dictionary
+        texts[0].text = Card.CardData.Attack.ToString();
+        texts[1].text = Card.CardData.Health.ToString();
+    }
+
+    public void TakeDamage(int amount)
+    {
+
+    }
+
+    public void RestoreHealth(int amount)
+    {
+
+    }
+
+    public void ChangeStats(string cause, int attack, int health)
+    {
+
     }
 }
