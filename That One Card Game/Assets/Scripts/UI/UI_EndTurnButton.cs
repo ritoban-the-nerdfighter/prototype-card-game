@@ -3,28 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Scripts.Managers;
 
-public class UI_EndTurnButton : MonoBehaviour
+namespace Assets.Scripts.UI
 {
-    private void Start()
+    public class UI_EndTurnButton : MonoBehaviour
     {
-        TurnManager.Instance.OnTurnStarted += UpdateButtonStatus;
-    }
-
-    private void UpdateButtonStatus(bool playerTurn)
-    {
-        if(playerTurn == true)
+        private void Start()
         {
-            GetComponent<Button>().interactable = true;
+            TurnManager.Instance.OnTurnStarted += UpdateButtonStatus;
         }
-        else
-        {
-            GetComponent<Button>().interactable = false;
-        }
-    }
 
-    public void ButtonPressed()
-    {
-        TurnManager.Instance.EndTurn();
+        private void UpdateButtonStatus(bool playerTurn)
+        {
+            if (playerTurn == true)
+            {
+                GetComponent<Button>().interactable = true;
+            }
+            else
+            {
+                GetComponent<Button>().interactable = false;
+            }
+        }
+
+        public void ButtonPressed()
+        {
+            TurnManager.Instance.EndTurn();
+        }
     }
 }

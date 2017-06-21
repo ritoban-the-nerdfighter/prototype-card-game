@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+namespace Assets.Scripts.Util
 {
-    public static  T Instance
+    public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        get
+        public static T Instance
         {
-            if(_instance == null)
+            get
             {
-                _instance = GameObject.FindObjectOfType<T>();
+                if (_instance == null)
+                {
+                    _instance = GameObject.FindObjectOfType<T>();
+                }
+                return _instance;
             }
-            return _instance;
         }
+        private static T _instance;
     }
-    private static T _instance;
 }

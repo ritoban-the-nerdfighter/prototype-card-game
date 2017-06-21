@@ -3,38 +3,41 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using Assets.Scripts.Util;
 
-public class ResourceManager : Singleton<ResourceManager>
+namespace Assets.Scripts.Managers
 {
-
-
-    protected Dictionary<string, GameObject> GameObjectResources;
-
-    private void Awake()
+    public class ResourceManager : Singleton<ResourceManager>
     {
-        LoadResources();
-    }
 
-    private void LoadResources()
-    {
-        // GameObjectResources
-        GameObject[] gameObjects = Resources.LoadAll<GameObject>("");
-        GameObjectResources = new Dictionary<string, GameObject>();
-        foreach(GameObject g in gameObjects)
+        protected Dictionary<string, GameObject> GameObjectResources;
+
+        private void Awake()
         {
-            GameObjectResources.Add(g.name, g);
+            LoadResources();
         }
+
+        private void LoadResources()
+        {
+            // GameObjectResources
+            GameObject[] gameObjects = Resources.LoadAll<GameObject>("");
+            GameObjectResources = new Dictionary<string, GameObject>();
+            foreach (GameObject g in gameObjects)
+            {
+                GameObjectResources.Add(g.name, g);
+            }
+        }
+
+        #region Methods for Getting things from dictionaries
+
+        public GameObject GetResourcePrefab(string s)
+        {
+            if (GameObjectResources.ContainsKey(s) == false)
+                throw new ArgumentException(s + " is not in GameObjectResources");
+            return GameObjectResources[s];
+        }
+
+        #endregion
     }
 
-    #region Methods for Getting things from dictionaries
-
-    public GameObject GetResourcePrefab(string s)
-    {
-        if (GameObjectResources.ContainsKey(s) == false)
-            throw new ArgumentException(s + " is not in GameObjectResources");
-        return GameObjectResources[s];
-    }
-
-    #endregion
 }
-

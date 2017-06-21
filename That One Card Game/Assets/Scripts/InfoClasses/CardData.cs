@@ -26,5 +26,5 @@ public class CardData : ScriptableObject
     public string ActionFile;
     public string TurnStartedMethod;
     public string TurnEndedMethod;
-   
+    public string CardPlayedMethod;
 }

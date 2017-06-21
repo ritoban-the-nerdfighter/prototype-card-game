@@ -1,16 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.InfoClasses;
 
-public  static class SomeRandomFlyingRobot
+namespace Assets.Scripts.Actions
 {
-    public static void OnTurnStarted(bool playerTurn)
+    public static class SomeRandomFlyingRobot
     {
-        Debug.Log("SomeRandomMinionActions::OnTurnStarted");
-    }
+        public static void OnTurnStarted(bool playerTurn)
+        {
+            Debug.Log("SomeRandomMinionActions::OnTurnStarted");
+        }
 
-    public static void OnTurnEnded(bool playerTurn)
-    {
-        Debug.Log("SomeRandomMinionActions::OnTurnEnded");
+        public static void OnTurnEnded(bool playerTurn)
+        {
+            Debug.Log("SomeRandomMinionActions::OnTurnEnded");
+        }
+
+        public static void OnCardPlayed(Card c)
+        {
+            Debug.Log("Battlecry: " + c.CardData.Name);
+        }
     }
 }

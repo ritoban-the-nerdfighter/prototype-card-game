@@ -18,6 +18,7 @@ MonoBehaviour:
   CardType: 0
   Health: 2
   Attack: 3
-  ActionFile: SomeRandomFlyingRobot
+  ActionFile: Assets.Scripts.Actions.SomeRandomFlyingRobot
   TurnStartedMethod: OnTurnStarted
   TurnEndedMethod: OnTurnEnded
+  CardPlayedMethod: OnCardPlayed

@@ -8,15 +8,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BidirectionalDictionary<T1, T2> : Dictionary<T1, T2>
+namespace Assets.Scripts.Util
 {
-    public T1 this[T2 index]
+    public class BidirectionalDictionary<T1, T2> : Dictionary<T1, T2>
     {
-        get
+        public T1 this[T2 index]
         {
-            if (!this.Any(x => x.Value.Equals(index)))
-                throw new System.Collections.Generic.KeyNotFoundException();
-            return this.First(x => x.Value.Equals(index)).Key;
+            get
+            {
+                if (!this.Any(x => x.Value.Equals(index)))
+                    throw new System.Collections.Generic.KeyNotFoundException();
+                return this.First(x => x.Value.Equals(index)).Key;
+            }
         }
     }
 }

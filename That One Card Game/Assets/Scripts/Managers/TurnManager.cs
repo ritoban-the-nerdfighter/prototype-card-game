@@ -2,47 +2,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Util;
 
-public class TurnManager : Singleton<TurnManager>
+namespace Assets.Scripts.Managers
 {
-    public bool PlayerTurn { get; protected set; }
-    public bool OpponentTurn
+    public class TurnManager : Singleton<TurnManager>
     {
-        get
+        public bool PlayerTurn { get; protected set; }
+        public bool OpponentTurn
         {
-            return PlayerTurn == false;
+            get
+            {
+                return PlayerTurn == false;
+            }
         }
-    }
 
-    private void Start()
-    {
-        // FIXME: This may not always apply!
-        PlayerTurn = true;
-        if (OnTurnStarted != null)
-            OnTurnStarted(PlayerTurn);
-    }
+        private void Start()
+        {
+            // FIXME: This may not always apply!
+            PlayerTurn = true;
+            if (OnTurnStarted != null)
+                OnTurnStarted(PlayerTurn);
+        }
 
-    private void Update()
-    {
-    }
+        private void Update()
+        {
+        }
 
-    /// <summary>
-    /// Called when the turn has ended. Called before PlayerTurn is set. Passes last value of PlayerTurn.
-    /// </summary>
-    public Action<bool> OnTurnEnded;
-    /// <summary>
-    /// Called when the turn just started. Called after PlayerTurn is set. Passes new value of PlayerTurn
-    /// </summary>
-    public Action<bool> OnTurnStarted;
+        /// <summary>
+        /// Called when the turn has ended. Called before PlayerTurn is set. Passes last value of PlayerTurn.
+        /// </summary>
+        public Action<bool> OnTurnEnded;
+        /// <summary>
+        /// Called when the turn just started. Called after PlayerTurn is set. Passes new value of PlayerTurn
+        /// </summary>
+        public Action<bool> OnTurnStarted;
 
-    public void EndTurn()
-    {
-        if (OnTurnEnded != null)
-            OnTurnEnded(PlayerTurn);
+        public void EndTurn()
+        {
+            if (OnTurnEnded != null)
+                OnTurnEnded(PlayerTurn);
 
-        PlayerTurn = PlayerTurn == false;
+            PlayerTurn = PlayerTurn == false;
 
-        if (OnTurnStarted != null)
-            OnTurnStarted(PlayerTurn);
+            if (OnTurnStarted != null)
+                OnTurnStarted(PlayerTurn);
+        }
     }
 }

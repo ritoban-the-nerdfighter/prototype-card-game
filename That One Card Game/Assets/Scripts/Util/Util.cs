@@ -2,33 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Util
+namespace Assets.Scripts.Util
 {
-    public static void SetLayerRecursively(this GameObject obj, int layer)
+    public static class Util
     {
-        obj.layer = layer;
-        foreach (Transform child in obj.transform)
+        public static void SetLayerRecursively(this GameObject obj, int layer)
         {
-            child.gameObject.SetLayerRecursively(layer);
+            obj.layer = layer;
+            foreach (Transform child in obj.transform)
+            {
+                child.gameObject.SetLayerRecursively(layer);
+            }
         }
-    }
 
-    public static void SetSortingLayerRecursively(this GameObject obj, string layer)
-    {
-        if (obj.GetComponent<Renderer>() != null)
-            obj.GetComponent<Renderer>().sortingLayerName = layer;
-        if (obj.GetComponent<Canvas>() != null)
-            obj.GetComponent<Canvas>().sortingLayerName = layer;
-        foreach (Transform child in obj.transform)
+        public static void SetSortingLayerRecursively(this GameObject obj, string layer)
         {
-            child.gameObject.SetSortingLayerRecursively(layer);
+            if (obj.GetComponent<Renderer>() != null)
+                obj.GetComponent<Renderer>().sortingLayerName = layer;
+            if (obj.GetComponent<Canvas>() != null)
+                obj.GetComponent<Canvas>().sortingLayerName = layer;
+            foreach (Transform child in obj.transform)
+            {
+                child.gameObject.SetSortingLayerRecursively(layer);
+            }
         }
-    }
 
-    public static float ManhattanDistance(Vector3 a, Vector3 b)
-    {
+        public static float ManhattanDistance(Vector3 a, Vector3 b)
+        {
 
-        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
+            return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
 
+        }
     }
 }

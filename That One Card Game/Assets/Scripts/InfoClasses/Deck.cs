@@ -4,18 +4,23 @@ using System.Linq;
 using System.Text;
 
 
-public class Deck
+namespace Assets.Scripts.InfoClasses
 {
-    public Stack<Card> CardDeck;
-
-    public Deck()
+    public class Deck
     {
+        public Stack<Card> CardDeck;
 
+        public Deck()
+        {
+
+        }
+
+
+        // UNUSED!!
+        public Card DrawCardFromDeck()
+        {
+            return CardDeck.Pop();
+        }
     }
 
-    public Card DrawCardFromDeck()
-    {
-        return CardDeck.Pop();
-    }
 }
-

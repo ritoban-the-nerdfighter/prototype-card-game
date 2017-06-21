@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Rand = UnityEngine.Random;
+using Assets.Scripts.Managers;
+using Assets.Scripts.InfoClasses;
 
 
 
@@ -28,8 +30,6 @@ public class AI
 
             );
         }
-        
-
 
     }
 }

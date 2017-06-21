@@ -1,17 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Managers;
+using Assets.Scripts.InfoClasses;
 
-public class TEST_CardCreator : MonoBehaviour
+namespace Assets.Scripts.Test
 {
-    public CardData[] Deck;
-    public int CardCount;
-
-    private void Awake()
+    public class TEST_CardCreator : MonoBehaviour
     {
-        for (int i = 0; i < CardCount; i++)
+        public CardData[] Deck;
+        public int CardCount;
+
+        private void Awake()
         {
-            HandManager.Instance.PlayerHand.AddCard(new Card(Deck[i % Deck.Length]));
+            for (int i = 0; i < CardCount; i++)
+            {
+                HandManager.Instance.PlayerHand.AddCard(new Card(Deck[i % Deck.Length]));
+            }
         }
     }
+
 }
