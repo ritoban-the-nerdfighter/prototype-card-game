@@ -12,13 +12,14 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 
         protected void Start()
         {
-            Debug.Log("Parentclass Start");
+            //Debug.Log("Parentclass Start");
             Init();
         }
 
         protected void Init()
         {
-            Debug.Log("ParentClass Init");
+            //Debug.Log("ParentClass Init");
+
             switch (Card.CardData.CardType)
             {
                 case CardType.Minion:

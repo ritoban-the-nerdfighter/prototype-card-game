@@ -26,9 +26,12 @@ namespace Assets.Scripts.Managers
 
         public GameObject GetGameObjectForCardOnBoard(Card c, Transform parent)
         {
+            Debug.Log(c);
             GameObject cardGO = Instantiate(cardPortraitPrefab, parent);
             SpriteRenderer sr = cardGO.GetComponent<SpriteRenderer>();
             sr.sprite = c.CardData.CardPortrait;
+            CardHolder_Board holder = cardGO.GetComponent<CardHolder_Board>();
+            holder.Card = c;
             return cardGO;
         }
     }

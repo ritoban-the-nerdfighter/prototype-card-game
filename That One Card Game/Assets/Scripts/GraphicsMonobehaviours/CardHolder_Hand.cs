@@ -11,7 +11,7 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 {
     class CardHolder_Hand : CardHolder
     {
-        public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 3.5f;
+        public static readonly float CARD_HIGHLIGHT_SCALE_INCREASE = 4f;
 
 
         public Text NameText;

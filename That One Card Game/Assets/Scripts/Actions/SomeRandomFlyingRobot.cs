@@ -9,12 +9,12 @@ namespace Assets.Scripts.Actions
     {
         public static void OnTurnStarted(bool playerTurn)
         {
-            Debug.Log("SomeRandomMinionActions::OnTurnStarted");
+            //Debug.Log("SomeRandomMinionActions::OnTurnStarted");
         }
 
         public static void OnTurnEnded(bool playerTurn)
         {
-            Debug.Log("SomeRandomMinionActions::OnTurnEnded");
+           //Debug.Log("SomeRandomMinionActions::OnTurnEnded");
         }
 
         public static void OnCardPlayed(Card c)

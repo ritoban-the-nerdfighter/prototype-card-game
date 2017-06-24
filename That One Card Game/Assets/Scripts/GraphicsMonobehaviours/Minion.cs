@@ -27,7 +27,6 @@ namespace Assets.Scripts.GraphicsMonobehaviours
         private void Awake()
         {
             CardHolder = GetComponent<CardHolder>();
-            // FIXME: SUCH AN UGLY way to do this. FIND A BETTER SOLUTION!
             SetupCardAsMinion();
         }
 
@@ -35,16 +34,20 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 
         private void SetupCardAsMinion()
         {
-            // CREATE HEALTH AND ATTACK UI VALUES
-            // FIXME: Hard coding in canvas as parent
-            UIGo = Instantiate(ResourceManager.Instance.GetResourcePrefab(MINION_UI_PREFAB_NAME),
-                this.transform.GetComponentInChildren<Canvas>().transform, false);
 
-            Card.AddListener("Attack", UpdateStatDisplay);
-            Card.AddListener("Health", UpdateStatDisplay);
+            // FIXME: These checks scattered throughout the code are UGLY!!!
+            if (CardHolder is CardHolder_Hand)
+            {
+                // CREATE HEALTH AND ATTACK UI VALUES WHILE CARD IS IN HAND (OR SOMETHING ELSE)
+                UIGo = Instantiate(ResourceManager.Instance.GetResourcePrefab(MINION_UI_PREFAB_NAME),
+                    this.transform.GetComponentInChildren<Canvas>().transform, false);
+                // FIXME: These listeners won't kick in the first time because Cards are created in an awake method before this
+                Card.AddListener("Attack", UpdateStatDisplay);
+                Card.AddListener("Health", UpdateStatDisplay);
+                UpdateStatDisplay();
+            }
+
         }
-
-
 
 
         public void TakeDamage(int amount)
@@ -64,9 +67,9 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 
         private void UpdateStatDisplay()
         {
+            // FIXME: Find a better way to do this
             Text[] texts = UIGo.GetComponentsInChildren<Text>();
 
-            // FIXME: Card should have a "Statistics" dictionary
             texts[0].text = Card.GetStat("Attack").ToString();
             texts[1].text = Card.GetStat("Health").ToString();
         }

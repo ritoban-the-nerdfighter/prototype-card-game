@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Assets.Scripts.InfoClasses;
 using Assets.Scripts.Util;
+using Assets.Scripts.GraphicsMonobehaviours;
 
 namespace Assets.Scripts.Managers
 {
@@ -45,9 +46,21 @@ namespace Assets.Scripts.Managers
 
         }
 
+        private void Update()
+        {
+            RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
+            if(hit.collider != null && CardGameObjectMap.ContainsValue(hit.collider.gameObject))
+            {
+                GameObject cardGo = hit.collider.gameObject;
+                CardHolder_Board holder = cardGo.GetComponent<CardHolder_Board>();
+                holder.OnCardHighlighted();
+            }
+        }
+
         private void SetupPlayerCardGameObject(Card c)
         {
             GameObject cardGO = CardManager.Instance.GetGameObjectForCardOnBoard(c, TurnManager.Instance.PlayerTurn ? playerBoardParent : opponentBoardParent);
+            cardGO.SetLayerRecursively(10);
             CardGameObjectMap.Add(c, cardGO);
         }
 

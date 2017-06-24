@@ -236,7 +236,7 @@ Transform:
   m_GameObject: {fileID: 1033797585258466}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children:
   - {fileID: 4275684368752512}
   - {fileID: 4455071546811112}
@@ -445,8 +445,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4785a32e4198ae847a202b224cc36180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MinionUIDataPrefab: {fileID: 1916375597533226, guid: 29394bf6aa7261b4ea368ce78a467ac9,
-    type: 2}
   NameText: {fileID: 114760134011361008}
   CardPortrait: {fileID: 212193661858575110}
   ManaCostText: {fileID: 114859643912442190}

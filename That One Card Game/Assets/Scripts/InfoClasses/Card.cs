@@ -68,9 +68,9 @@ namespace Assets.Scripts.InfoClasses
             {
                 case CardType.Minion:
                     SetStat("Attack", CardData.Attack);
-                    SetStat("Health", CardData.Attack);
+                    SetStat("Health", CardData.Health);
                     SetStat("BaseAttack", CardData.Attack);
-                    SetStat("BaseHealth", CardData.Attack);
+                    SetStat("BaseHealth", CardData.Health);
                     break;
                 default:
                     break;

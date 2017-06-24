@@ -17,7 +17,7 @@ MonoBehaviour:
   ManaCost: 2
   CardType: 0
   Health: 2
-  Attack: 3
+  Attack: 5
   ActionFile: Assets.Scripts.Actions.SomeRandomFlyingRobot
   TurnStartedMethod: OnTurnStarted
   TurnEndedMethod: OnTurnEnded
