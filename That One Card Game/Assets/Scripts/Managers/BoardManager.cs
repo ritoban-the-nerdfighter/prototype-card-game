@@ -53,7 +53,7 @@ namespace Assets.Scripts.Managers
             {
                 GameObject cardGo = hit.collider.gameObject;
                 CardHolder_Board holder = cardGo.GetComponent<CardHolder_Board>();
-                holder.OnCardHighlighted();
+                holder.OnCardHighlight();
             }
         }
 

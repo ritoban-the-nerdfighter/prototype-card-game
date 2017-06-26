@@ -26,7 +26,7 @@ namespace Assets.Scripts.Managers
 
         public GameObject GetGameObjectForCardOnBoard(Card c, Transform parent)
         {
-            Debug.Log(c);
+            //Debug.Log(c);
             GameObject cardGO = Instantiate(cardPortraitPrefab, parent);
             SpriteRenderer sr = cardGO.GetComponent<SpriteRenderer>();
             sr.sprite = c.CardData.CardPortrait;

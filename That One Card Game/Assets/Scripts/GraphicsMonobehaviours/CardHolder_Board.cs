@@ -7,52 +7,53 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 {
     class CardHolder_Board : CardHolder
     {
-        // FIXME: Because all cards on the board are minions, we are doing this here! (Later on, weapons will work similarly)
-        private void Update()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                StartDrag();
-            }
-            if (Input.GetMouseButton(0))
-            {
-                UpdateDrag();
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                EndDrag();
-            }
-        }
+        public GameObject ArrowPrefab;
 
-        private void EndDrag()
-        {
-            throw new NotImplementedException();
-        }
 
-        private void UpdateDrag()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void StartDrag()
-        {
-            if (CardHighlighted == false)
-                return;
-            // Create an arrow
-            Debug.Log("Start Drag");
-        }
-
-        protected bool CardHighlighted = false;
+        protected bool cardHighlighted = false;
+        protected GameObject arrowGO;
 
         public void OnCardHighlight()
         {
-            CardHighlighted = true;
+            cardHighlighted = true;
         }
 
         public void LateUpdate()
         {
+            if (cardHighlighted)
+            {
+                if (Input.GetMouseButtonDown(0) && arrowGO == null)
+                {
+                    // Create Arrow
+                    arrowGO = Instantiate(ArrowPrefab, this.transform, false);
+                }
+            }
+
+            if(arrowGO != null)
+            {
+                // Follow the mouse!
+                // Step 1: Convert Mouse Position to world coordinates!!
+                Vector3 worldSpaceMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                worldSpaceMouse.z = 0;
+                Vector3 diff = this.transform.position - worldSpaceMouse;
+                diff.z = 0;
+                arrowGO.transform.position = this.transform.position;
+                arrowGO.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Rad2Deg * Mathf.Atan2(diff.y, diff.x));
+                arrowGO.transform.localScale = Vector3.one * diff.magnitude;
+            }
+
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                Destroy(arrowGO);
+                // Check what's under the mouse!
+             
+            }
+
+
+
             // HACK: this is a terrible way to do this. you should keep a "card highlighted last frame" thing in the board manager
-            CardHighlighted = false;
+            cardHighlighted = false;
         }
     }
 }
