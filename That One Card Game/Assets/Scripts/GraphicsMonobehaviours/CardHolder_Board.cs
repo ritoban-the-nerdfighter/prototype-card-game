@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.GraphicsMonobehaviours
 {
@@ -22,7 +23,7 @@ namespace Assets.Scripts.GraphicsMonobehaviours
         {
             if (cardHighlighted)
             {
-                if (Input.GetMouseButtonDown(0) && arrowGO == null)
+                if (Input.GetMouseButtonDown(0) && arrowGO == null && TurnManager.Instance.PlayerTurn == Card.Player && Card.Player == true)
                 {
                     // Create Arrow
                     arrowGO = Instantiate(ArrowPrefab, this.transform, false);

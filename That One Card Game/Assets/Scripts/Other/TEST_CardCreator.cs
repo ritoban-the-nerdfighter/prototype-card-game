@@ -15,7 +15,7 @@ namespace Assets.Scripts.Test
         {
             for (int i = 0; i < CardCount; i++)
             {
-                HandManager.Instance.PlayerHand.AddCard(new Card(Deck[i % Deck.Length]));
+                HandManager.Instance.PlayerHand.AddCard(new Card(Deck[i % Deck.Length], true));
             }
         }
     }

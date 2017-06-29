@@ -27,7 +27,7 @@ namespace Assets.Scripts.Managers
             TurnManager.Instance.OnTurnStarted += OnTurnStarted;
             for (int i = 0; i < 10; i++)
             {
-                Hand.AddCard(new Card(CardData[Rand.Range(0, CardData.Length)]));
+                Hand.AddCard(new Card(CardData[Rand.Range(0, CardData.Length)], false));
             }
         }
 

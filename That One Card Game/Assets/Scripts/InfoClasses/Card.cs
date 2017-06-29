@@ -17,10 +17,13 @@ namespace Assets.Scripts.InfoClasses
         public Action OnEnterHand;
         public Action<Card> OnCardPlayed;
 
-        public Card(CardData cardData)
+        public bool Player;
+
+        public Card(CardData cardData, bool player)
         {
             CardData = cardData;
             ManaCost = cardData.ManaCost;
+            this.Player = player;
 
 
             SetupBaseStats();
