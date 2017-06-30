@@ -57,3 +57,6 @@ TagManager:
   - name: SelectedCard
     uniqueID: 1124071853
     locked: 0
+  - name: DamageLine
+    uniqueID: 1749277291
+    locked: 0

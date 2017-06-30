@@ -24,6 +24,8 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 
         private CardHolder CardHolder;
 
+        public event Action OnCardDeath;
+
         private void Awake()
         {
             CardHolder = GetComponent<CardHolder>();
@@ -36,7 +38,7 @@ namespace Assets.Scripts.GraphicsMonobehaviours
         {
 
             // FIXME: These checks scattered throughout the code are UGLY!!!
-            if (CardHolder is CardHolder_Hand)
+            if (CardHolder is CardHolder_Hand || (CardHolder is CardHolder_Board && Card.CardData.CardType == CardType.Minion))
             {
                 // CREATE HEALTH AND ATTACK UI VALUES WHILE CARD IS IN HAND (OR SOMETHING ELSE)
                 UIGo = Instantiate(ResourceManager.Instance.GetResourcePrefab(MINION_UI_PREFAB_NAME),
@@ -52,7 +54,9 @@ namespace Assets.Scripts.GraphicsMonobehaviours
 
         public void TakeDamage(int amount)
         {
-
+            Card.ChangeStat("Health", -amount);
+            if (Card.GetStat("Health") <= 0)
+                Die();
         }
 
         public void RestoreHealth(int amount)
@@ -63,6 +67,11 @@ namespace Assets.Scripts.GraphicsMonobehaviours
         public void ChangeStats(string cause, int attack, int health)
         {
 
+        }
+
+        private void Die()
+        {
+            OnCardDeath();
         }
 
         private void UpdateStatDisplay()

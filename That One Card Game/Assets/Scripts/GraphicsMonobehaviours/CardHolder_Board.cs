@@ -6,7 +6,7 @@ using Assets.Scripts.Managers;
 
 namespace Assets.Scripts.GraphicsMonobehaviours
 {
-    class CardHolder_Board : CardHolder
+    public class CardHolder_Board : CardHolder
     {
         public GameObject ArrowPrefab;
 
@@ -30,7 +30,7 @@ namespace Assets.Scripts.GraphicsMonobehaviours
                 }
             }
 
-            if(arrowGO != null)
+            if (arrowGO != null)
             {
                 // Follow the mouse!
                 // Step 1: Convert Mouse Position to world coordinates!!
@@ -44,11 +44,15 @@ namespace Assets.Scripts.GraphicsMonobehaviours
             }
 
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && arrowGO)
             {
                 Destroy(arrowGO);
                 // Check what's under the mouse!
-             
+                CardHolder_Board holderUnderMouse = BoardManager.Instance.holderUnderMouse;
+                if (holderUnderMouse != null)
+                    if ((holderUnderMouse == this || holderUnderMouse.Card.Player == Card.Player) == false)
+                        holderUnderMouse.GetComponent<Minion>().TakeDamage(Card.GetStat("Attack"));
+
             }
 
 

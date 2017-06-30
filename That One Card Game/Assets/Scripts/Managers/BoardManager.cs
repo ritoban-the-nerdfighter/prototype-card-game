@@ -28,32 +28,39 @@ namespace Assets.Scripts.Managers
             PlayerBoard = new Board();
             PlayerBoard.OnMinionAdded += SetupPlayerCardGameObject;
             // ALERT: This relies on these being called in order
-            PlayerBoard.OnMinionAdded += UpdateCardPositionsWrapper;
+            PlayerBoard.OnMinionAdded += (c) => { UpdateCardPositionsWrapper(); };
             OpponentBoard = new Board();
             OpponentBoard.OnMinionAdded += SetupPlayerCardGameObject;
             // ALERT: This relies on these being called in order
-            OpponentBoard.OnMinionAdded += UpdateCardPositionsWrapper; CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
+            OpponentBoard.OnMinionAdded += (c) => { UpdateCardPositionsWrapper(); };
+            CardGameObjectMap = new BidirectionalDictionary<Card, GameObject>();
 
             playerBoardParent = new GameObject("Player Board").transform;
             playerBoardParent.SetParent(this.transform);
-            playerBoardParent.localPosition = new Vector3(0, -1.5f);
+            playerBoardParent.localPosition = new Vector3(0, -1f);
             playerBoardParent.localScale = Vector3.one;
 
             opponentBoardParent = new GameObject("Opponent Board").transform;
             opponentBoardParent.SetParent(this.transform);
-            opponentBoardParent.localPosition = new Vector3(0, 1.5f);
+            opponentBoardParent.localPosition = new Vector3(0, 1f);
             opponentBoardParent.localScale = Vector3.one;
 
         }
 
+        public CardHolder_Board holderUnderMouse { get; protected set; }
+
         private void Update()
         {
             RaycastHit2D hit = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
-            if(hit.collider != null && CardGameObjectMap.ContainsValue(hit.collider.gameObject))
+            if (hit.collider != null && CardGameObjectMap.ContainsValue(hit.collider.gameObject))
             {
                 GameObject cardGo = hit.collider.gameObject;
-                CardHolder_Board holder = cardGo.GetComponent<CardHolder_Board>();
-                holder.OnCardHighlight();
+                holderUnderMouse = cardGo.GetComponent<CardHolder_Board>();
+                holderUnderMouse.OnCardHighlight();
+            }
+            else
+            {
+                holderUnderMouse = null;
             }
         }
 
@@ -61,16 +68,31 @@ namespace Assets.Scripts.Managers
         {
             GameObject cardGO = CardManager.Instance.GetGameObjectForCardOnBoard(c, TurnManager.Instance.PlayerTurn ? playerBoardParent : opponentBoardParent);
             cardGO.SetLayerRecursively(10);
+
+            CoroutineManager.Instance.SetupTimer(0.1f, null, () =>
+            {
+                Minion minion = cardGO.GetComponent<Minion>();
+                if (minion == null)
+                    Debug.LogWarning("This doesn't have a minion?");
+                else
+                {
+                    minion.OnCardDeath += UpdateCardPositionsWrapper; 
+                }
+            }
+            );
+
+
             CardGameObjectMap.Add(c, cardGO);
         }
 
 
-        private void UpdateCardPositionsWrapper(Card c)
+        private void UpdateCardPositionsWrapper()
         {
-            UpdateCardPositions(c, TurnManager.Instance.PlayerTurn);
+
+            UpdateCardPositions(TurnManager.Instance.PlayerTurn);
         }
 
-        private void UpdateCardPositions(Card c, bool player)
+        private void UpdateCardPositions(bool player)
         {
             Transform boardParent = player ? playerBoardParent : opponentBoardParent;
             Board board = (player ? PlayerBoard : OpponentBoard);

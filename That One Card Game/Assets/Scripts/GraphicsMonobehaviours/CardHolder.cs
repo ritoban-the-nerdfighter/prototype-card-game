@@ -5,7 +5,7 @@ using Assets.Scripts.InfoClasses;
 
 namespace Assets.Scripts.GraphicsMonobehaviours
 {
-    abstract class CardHolder : MonoBehaviour
+    public abstract class CardHolder : MonoBehaviour
     {
         // FIXME: This is set by the cardManager
         public Card Card { get; set; }
